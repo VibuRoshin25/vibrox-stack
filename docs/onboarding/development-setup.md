@@ -8,14 +8,14 @@ This guide provides step-by-step instructions for setting up a local development
 
 ### Required Software
 
-| Software | Version | Installation |
-|----------|---------|--------------|
-| **Git** | 2.30+ | [Git Installation](https://git-scm.com/downloads) |
-| **Docker** | 20.10+ | [Docker Installation](https://docs.docker.com/get-docker/) |
-| **Docker Compose** | 2.0+ | [Docker Compose Installation](https://docs.docker.com/compose/install/) |
-| **Go** | 1.21+ | [Go Installation](https://golang.org/dl/) |
-| **Node.js** | 18+ | [Node.js Installation](https://nodejs.org/) |
-| **PostgreSQL** | 15+ | [PostgreSQL Installation](https://www.postgresql.org/download/) |
+| Software           | Version | Installation                                                            |
+| ------------------ | ------- | ----------------------------------------------------------------------- |
+| **Git**            | 2.30+   | [Git Installation](https://git-scm.com/downloads)                       |
+| **Docker**         | 20.10+  | [Docker Installation](https://docs.docker.com/get-docker/)              |
+| **Docker Compose** | 2.0+    | [Docker Compose Installation](https://docs.docker.com/compose/install/) |
+| **Go**             | 1.21+   | [Go Installation](https://golang.org/dl/)                               |
+| **Node.js**        | 18+     | [Node.js Installation](https://nodejs.org/)                             |
+| **PostgreSQL**     | 15+     | [PostgreSQL Installation](https://www.postgresql.org/download/)         |
 
 ### System Requirements
 
@@ -587,4 +587,4 @@ npm --version
 
 ---
 
-*This development setup guide should be updated when new tools or workflows are added to the project.*
+_This development setup guide should be updated when new tools or workflows are added to the project._

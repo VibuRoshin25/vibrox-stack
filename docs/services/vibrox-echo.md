@@ -20,17 +20,17 @@ graph TB
         Formatter[Log Formatter<br/>JSON/Text]
         Indexer[Log Indexer<br/>Search]
     end
-    
+
     subgraph "External Dependencies"
         Core[vibrox-core<br/>gRPC Client]
         Auth[vibrox-auth<br/>gRPC Client]
         Logger[vibrox-echo<br/>gRPC Client]
     end
-    
+
     Core --> GRPC
     Auth --> GRPC
     Logger --> GRPC
-    
+
     GRPC --> LogProcessor
     LogProcessor --> Formatter
     Formatter --> Storage
@@ -42,15 +42,15 @@ graph TB
 
 ### Environment Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `LOG_LEVEL` | Logging level | `INFO` | No |
-| `LOG_PATH` | Log file path | `./logs` | No |
-| `LOG_FORMAT` | Log format (json/text) | `json` | No |
-| `LOG_MAX_SIZE` | Max log file size (MB) | `100` | No |
-| `LOG_MAX_FILES` | Max number of log files | `10` | No |
-| `PORT` | Service port | `9000` | No |
-| `HOST` | Service host | `0.0.0.0` | No |
+| Variable        | Description             | Default   | Required |
+| --------------- | ----------------------- | --------- | -------- |
+| `LOG_LEVEL`     | Logging level           | `INFO`    | No       |
+| `LOG_PATH`      | Log file path           | `./logs`  | No       |
+| `LOG_FORMAT`    | Log format (json/text)  | `json`    | No       |
+| `LOG_MAX_SIZE`  | Max log file size (MB)  | `100`     | No       |
+| `LOG_MAX_FILES` | Max number of log files | `10`      | No       |
+| `PORT`          | Service port            | `9000`    | No       |
+| `HOST`          | Service host            | `0.0.0.0` | No       |
 
 ### Docker Configuration
 
@@ -79,16 +79,16 @@ logger:
 service LogService {
   // Log a message
   rpc Log(LogRequest) returns (LogResponse);
-  
+
   // Get logs with filters
   rpc GetLogs(GetLogsRequest) returns (GetLogsResponse);
-  
+
   // Search logs
   rpc SearchLogs(SearchLogsRequest) returns (SearchLogsResponse);
-  
+
   // Get log statistics
   rpc GetLogStats(LogStatsRequest) returns (LogStatsResponse);
-  
+
   // Stream logs in real-time
   rpc StreamLogs(StreamLogsRequest) returns (stream LogEntry);
 }
@@ -149,13 +149,13 @@ message LogEntry {
 
 ### Log Levels
 
-| Level | Description | Use Case |
-|-------|-------------|----------|
+| Level     | Description                    | Use Case                        |
+| --------- | ------------------------------ | ------------------------------- |
 | **DEBUG** | Detailed debugging information | Development and troubleshooting |
-| **INFO** | General information messages | Normal application flow |
-| **WARN** | Warning messages | Potential issues |
-| **ERROR** | Error conditions | Application errors |
-| **FATAL** | Fatal errors | Service termination |
+| **INFO**  | General information messages   | Normal application flow         |
+| **WARN**  | Warning messages               | Potential issues                |
+| **ERROR** | Error conditions               | Application errors              |
+| **FATAL** | Fatal errors                   | Service termination             |
 
 ### Log Format
 
@@ -193,17 +193,17 @@ sequenceDiagram
     participant Service as Any Service
     participant Logger as vibrox-echo
     participant Storage as Log Files
-    
+
     Service->>Logger: gRPC Log()
     Note over Service,Logger: LogRequest{level, message, service, metadata}
-    
+
     Logger->>Logger: Validate log entry
     Logger->>Logger: Format log entry
     Logger->>Logger: Add timestamp
-    
+
     Logger->>Storage: Write to log file
     Note over Logger,Storage: JSON formatted log entry
-    
+
     Logger-->>Service: LogResponse{success, log_id}
 ```
 
@@ -214,16 +214,16 @@ sequenceDiagram
     participant Client
     participant Logger as vibrox-echo
     participant Storage as Log Files
-    
+
     Client->>Logger: gRPC GetLogs()
     Note over Client,Logger: GetLogsRequest{filters, pagination}
-    
+
     Logger->>Storage: Read log files
     Storage-->>Logger: Log entries
-    
+
     Logger->>Logger: Apply filters
     Logger->>Logger: Format response
-    
+
     Logger-->>Client: GetLogsResponse{logs, total}
 ```
 
@@ -289,7 +289,7 @@ var (
         },
         []string{"level", "service"},
     )
-    
+
     logProcessingDuration = prometheus.NewHistogramVec(
         prometheus.HistogramOpts{
             Name:    "log_processing_duration_seconds",
@@ -327,16 +327,16 @@ logger.Info("Service started",
 func TestLogService_Log(t *testing.T) {
     // Setup
     service := NewLogService()
-    
+
     // Test case
     req := &pb.LogRequest{
         Level:   "INFO",
         Message: "Test log message",
         Service: "test-service",
     }
-    
+
     resp, err := service.Log(context.Background(), req)
-    
+
     // Assertions
     assert.NoError(t, err)
     assert.True(t, resp.Success)
@@ -352,27 +352,27 @@ func TestLogServiceIntegration(t *testing.T) {
     // Start server
     server := startTestServer(t)
     defer server.Stop()
-    
+
     // Create client
     client := createTestClient(t)
-    
+
     // Test log ingestion
     req := &pb.LogRequest{
         Level:   "INFO",
         Message: "Integration test message",
         Service: "test-service",
     }
-    
+
     resp, err := client.Log(context.Background(), req)
     assert.NoError(t, err)
     assert.True(t, resp.Success)
-    
+
     // Test log retrieval
     getReq := &pb.GetLogsRequest{
         Service: "test-service",
         Limit:   10,
     }
-    
+
     getResp, err := client.GetLogs(context.Background(), getReq)
     assert.NoError(t, err)
     assert.Len(t, getResp.Logs, 1)
@@ -413,16 +413,16 @@ func compressLogFile(filename string) error {
         return err
     }
     defer file.Close()
-    
+
     gzFile, err := os.Create(filename + ".gz")
     if err != nil {
         return err
     }
     defer gzFile.Close()
-    
+
     gzWriter := gzip.NewWriter(gzFile)
     defer gzWriter.Close()
-    
+
     _, err = io.Copy(gzWriter, file)
     return err
 }
@@ -442,13 +442,13 @@ type LogIndex struct {
 func (idx *LogIndex) Add(entry LogEntry) {
     idx.mutex.Lock()
     defer idx.mutex.Unlock()
-    
+
     // Add to service index
     idx.byService[entry.Service] = append(idx.byService[entry.Service], entry.ID)
-    
+
     // Add to level index
     idx.byLevel[entry.Level] = append(idx.byLevel[entry.Level], entry.ID)
-    
+
     // Add to user index
     if entry.UserId > 0 {
         idx.byUser[entry.UserId] = append(idx.byUser[entry.UserId], entry.ID)
@@ -509,17 +509,17 @@ spec:
   template:
     spec:
       containers:
-      - name: vibrox-echo
-        image: vibrox-echo:latest
-        ports:
-        - containerPort: 9000
-        volumeMounts:
-        - name: log-storage
-          mountPath: /app/logs
+        - name: vibrox-echo
+          image: vibrox-echo:latest
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: log-storage
+              mountPath: /app/logs
       volumes:
-      - name: log-storage
-        persistentVolumeClaim:
-          claimName: log-pvc
+        - name: log-storage
+          persistentVolumeClaim:
+            claimName: log-pvc
 ```
 
 ### Load Balancing
@@ -534,8 +534,8 @@ spec:
   selector:
     app: vibrox-echo
   ports:
-  - port: 9000
-    targetPort: 9000
+    - port: 9000
+      targetPort: 9000
   type: ClusterIP
 ```
 
@@ -617,9 +617,9 @@ func main() {
         log.Fatal(err)
     }
     defer conn.Close()
-    
+
     client := pb.NewLogServiceClient(conn)
-    
+
     // Log a message
     resp, err := client.Log(context.Background(), &pb.LogRequest{
         Level:   "INFO",
@@ -630,11 +630,11 @@ func main() {
             "environment": "production",
         },
     })
-    
+
     if err != nil {
         log.Fatal(err)
     }
-    
+
     log.Printf("Log ID: %s", resp.LogId)
 }
 ```
@@ -642,38 +642,38 @@ func main() {
 ### Node.js Client Integration
 
 ```javascript
-const { LogServiceClient } = require('./log_grpc_pb');
-const { LogRequest } = require('./log_pb');
+const { LogServiceClient } = require("./log_grpc_pb");
+const { LogRequest } = require("./log_pb");
 
-const client = new LogServiceClient('localhost:9000');
+const client = new LogServiceClient("localhost:9000");
 
 async function logMessage(level, message, service, metadata = {}) {
   const request = new LogRequest();
   request.setLevel(level);
   request.setMessage(message);
   request.setService(service);
-  
+
   // Add metadata
   Object.entries(metadata).forEach(([key, value]) => {
     request.getMetadataMap().set(key, value);
   });
-  
+
   try {
     const response = await client.log(request);
     return {
       success: response.getSuccess(),
-      logId: response.getLogId()
+      logId: response.getLogId(),
     };
   } catch (error) {
-    console.error('Logging failed:', error);
+    console.error("Logging failed:", error);
     throw error;
   }
 }
 
 // Usage
-logMessage('INFO', 'User logged in', 'auth-service', {
-  userId: '123',
-  ipAddress: '192.168.1.100'
+logMessage("INFO", "User logged in", "auth-service", {
+  userId: "123",
+  ipAddress: "192.168.1.100",
 });
 ```
 
@@ -690,7 +690,7 @@ func (s *LogService) GetLogStats(ctx context.Context, req *pb.LogStatsRequest) (
         LogsByService: getLogsByService(),
         LogsByHour:    getLogsByHour(),
     }
-    
+
     return stats, nil
 }
 ```
@@ -702,7 +702,7 @@ func (s *LogService) GetLogStats(ctx context.Context, req *pb.LogStatsRequest) (
 func (s *LogService) SearchLogs(ctx context.Context, req *pb.SearchLogsRequest) (*pb.SearchLogsResponse, error) {
     query := req.GetQuery()
     results := searchLogFiles(query, req.GetFilters())
-    
+
     return &pb.SearchLogsResponse{
         Logs:  results,
         Total: int32(len(results)),
@@ -712,4 +712,4 @@ func (s *LogService) SearchLogs(ctx context.Context, req *pb.SearchLogsRequest) 
 
 ---
 
-*This service documentation should be updated when significant changes are made to the logging service. Use `/adr` to create Architecture Decision Records for major logging decisions.*
+_This service documentation should be updated when significant changes are made to the logging service. Use `/adr` to create Architecture Decision Records for major logging decisions._

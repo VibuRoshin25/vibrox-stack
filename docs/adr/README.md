@@ -19,13 +19,13 @@ Architecture Decision Records are short text documents that capture important ar
 
 ## 📚 ADR Index
 
-| ADR | Title | Status | Date |
-|-----|-------|--------|------|
-| [ADR-001](service-communication.md) | Service Communication Protocol | Accepted | TBD |
-| [ADR-002](database-strategy.md) | Database Strategy and Technology Choice | Accepted | TBD |
-| [ADR-003](deployment-strategy.md) | Deployment Strategy and Infrastructure | Accepted | TBD |
-| [ADR-004](authentication-strategy.md) | Authentication and Authorization Strategy | Accepted | TBD |
-| [ADR-005](logging-strategy.md) | Centralized Logging Strategy | Accepted | TBD |
+| ADR                                   | Title                                     | Status   | Date |
+| ------------------------------------- | ----------------------------------------- | -------- | ---- |
+| [ADR-001](service-communication.md)   | Service Communication Protocol            | Accepted | TBD  |
+| [ADR-002](database-strategy.md)       | Database Strategy and Technology Choice   | Accepted | TBD  |
+| [ADR-003](deployment-strategy.md)     | Deployment Strategy and Infrastructure    | Accepted | TBD  |
+| [ADR-004](authentication-strategy.md) | Authentication and Authorization Strategy | Accepted | TBD  |
+| [ADR-005](logging-strategy.md)        | Centralized Logging Strategy              | Accepted | TBD  |
 
 ## 📝 ADR Status Definitions
 
@@ -50,22 +50,29 @@ Each ADR should follow this structure:
 # ADR-XXX: [Title]
 
 ## Status
+
 [Proposed/Accepted/Deprecated/Superseded]
 
 ## Context
+
 [Describe the situation that led to this decision]
 
 ## Decision
+
 [Describe the architectural decision that was made]
 
 ## Consequences
+
 ### Positive
+
 - [List positive consequences]
 
 ### Negative
+
 - [List negative consequences or trade-offs]
 
 ### Neutral
+
 - [List neutral consequences or notes]
 ```
 
@@ -93,4 +100,4 @@ Each ADR should follow this structure:
 
 ---
 
-*Use `/adr "Title"` to create new Architecture Decision Records for significant architectural decisions.*
+_Use `/adr "Title"` to create new Architecture Decision Records for significant architectural decisions._

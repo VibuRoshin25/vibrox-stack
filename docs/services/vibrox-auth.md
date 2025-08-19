@@ -20,19 +20,19 @@ graph TB
         DBClient[Database Client<br/>pg]
         LoggerClient[Logger Client<br/>gRPC]
     end
-    
+
     subgraph "External Dependencies"
         Core[vibrox-core<br/>gRPC Client]
         DB[(PostgreSQL<br/>Database)]
         Logger[vibrox-echo<br/>gRPC]
     end
-    
+
     Core --> GRPC
     GRPC --> JWT
     GRPC --> Crypto
     GRPC --> DBClient
     GRPC --> LoggerClient
-    
+
     DBClient --> DB
     LoggerClient --> Logger
 ```
@@ -41,18 +41,18 @@ graph TB
 
 ### Environment Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `JWT_SECRET` | JWT signing secret | - | Yes |
-| `JWT_EXPIRES_IN` | Token expiration time | `24h` | No |
-| `DB_HOST` | Database host | `db` | Yes |
-| `DB_USER` | Database username | `postgres` | Yes |
-| `DB_PASSWORD` | Database password | `server` | Yes |
-| `DB_NAME` | Database name | `postgres` | Yes |
-| `DB_PORT` | Database port | `5432` | No |
-| `LOGGER_HOST` | Logging service host | `logger:9000` | Yes |
-| `PORT` | Service port | `8000` | No |
-| `NODE_ENV` | Node.js environment | `development` | No |
+| Variable         | Description           | Default       | Required |
+| ---------------- | --------------------- | ------------- | -------- |
+| `JWT_SECRET`     | JWT signing secret    | -             | Yes      |
+| `JWT_EXPIRES_IN` | Token expiration time | `24h`         | No       |
+| `DB_HOST`        | Database host         | `db`          | Yes      |
+| `DB_USER`        | Database username     | `postgres`    | Yes      |
+| `DB_PASSWORD`    | Database password     | `server`      | Yes      |
+| `DB_NAME`        | Database name         | `postgres`    | Yes      |
+| `DB_PORT`        | Database port         | `5432`        | No       |
+| `LOGGER_HOST`    | Logging service host  | `logger:9000` | Yes      |
+| `PORT`           | Service port          | `8000`        | No       |
+| `NODE_ENV`       | Node.js environment   | `development` | No       |
 
 ### Docker Configuration
 
@@ -84,19 +84,19 @@ auth:
 service AuthService {
   // Authenticate user with credentials
   rpc Authenticate(AuthRequest) returns (AuthResponse);
-  
+
   // Validate JWT token
   rpc ValidateToken(TokenRequest) returns (TokenResponse);
-  
+
   // Refresh JWT token
   rpc RefreshToken(RefreshRequest) returns (RefreshResponse);
-  
+
   // Logout user (invalidate token)
   rpc Logout(LogoutRequest) returns (LogoutResponse);
-  
+
   // Create user authentication record
   rpc CreateUserAuth(CreateAuthRequest) returns (CreateAuthResponse);
-  
+
   // Update user password
   rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse);
 }
@@ -152,22 +152,22 @@ sequenceDiagram
     participant Auth as vibrox-auth
     participant DB as PostgreSQL
     participant Logger as vibrox-echo
-    
+
     Client->>Core: POST /api/auth/login
     Note over Client,Core: {username, password}
-    
+
     Core->>Auth: gRPC Authenticate()
     Note over Core,Auth: AuthRequest{username, password}
-    
+
     Auth->>DB: SELECT user_auth WHERE username = ?
     DB-->>Auth: User auth data
-    
+
     Auth->>Auth: bcrypt.compare(password, hash)
     Auth->>Auth: Generate JWT token
-    
+
     Auth->>Logger: gRPC Log()
     Note over Auth,Logger: LogRequest{level: INFO, message: "User authenticated"}
-    
+
     Auth-->>Core: AuthResponse{token, user}
     Core-->>Client: 200 OK {token, user}
 ```
@@ -179,16 +179,16 @@ sequenceDiagram
     participant Core as vibrox-core
     participant Auth as vibrox-auth
     participant Logger as vibrox-echo
-    
+
     Core->>Auth: gRPC ValidateToken()
     Note over Core,Auth: TokenRequest{token}
-    
+
     Auth->>Auth: jwt.verify(token, secret)
     Auth->>Auth: Check token expiration
-    
+
     Auth->>Logger: gRPC Log()
     Note over Auth,Logger: LogRequest{level: INFO, message: "Token validated"}
-    
+
     Auth-->>Core: TokenResponse{valid: true, user_id}
 ```
 
@@ -220,9 +220,9 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_user_auth_updated_at 
-    BEFORE UPDATE ON user_auth 
-    FOR EACH ROW 
+CREATE TRIGGER update_user_auth_updated_at
+    BEFORE UPDATE ON user_auth
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 ```
 
@@ -249,7 +249,7 @@ DELETE FROM token_blacklist WHERE expires_at < CURRENT_TIMESTAMP;
 ### Password Hashing
 
 ```javascript
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // Hash password
 const saltRounds = 12;
@@ -262,13 +262,13 @@ const isValid = await bcrypt.compare(password, passwordHash);
 ### JWT Token Management
 
 ```javascript
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 // Generate token
 const token = jwt.sign(
   { user_id: user.id, username: user.username },
   process.env.JWT_SECRET,
-  { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+  { expiresIn: process.env.JWT_EXPIRES_IN || "24h" }
 );
 
 // Verify token
@@ -278,12 +278,12 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 ### Rate Limiting
 
 ```javascript
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // limit each IP to 5 requests per windowMs
-  message: 'Too many authentication attempts'
+  message: "Too many authentication attempts",
 });
 ```
 
@@ -293,12 +293,12 @@ const authLimiter = rateLimit({
 
 ```javascript
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   res.json({
-    status: 'healthy',
-    service: 'vibrox-auth',
+    status: "healthy",
+    service: "vibrox-auth",
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
   });
 });
 ```
@@ -306,42 +306,42 @@ app.get('/health', (req, res) => {
 ### Metrics Collection
 
 ```javascript
-const prometheus = require('prom-client');
+const prometheus = require("prom-client");
 
 // Custom metrics
 const authRequestsTotal = new prometheus.Counter({
-  name: 'auth_requests_total',
-  help: 'Total number of authentication requests',
-  labelNames: ['method', 'status']
+  name: "auth_requests_total",
+  help: "Total number of authentication requests",
+  labelNames: ["method", "status"],
 });
 
 const tokenValidationsTotal = new prometheus.Counter({
-  name: 'token_validations_total',
-  help: 'Total number of token validations',
-  labelNames: ['status']
+  name: "token_validations_total",
+  help: "Total number of token validations",
+  labelNames: ["status"],
 });
 ```
 
 ### Structured Logging
 
 ```javascript
-const winston = require('winston');
+const winston = require("winston");
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: "info",
   format: winston.format.json(),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'auth.log' })
-  ]
+    new winston.transports.File({ filename: "auth.log" }),
+  ],
 });
 
 // Log authentication events
-logger.info('User authenticated', {
+logger.info("User authenticated", {
   user_id: user.id,
   username: user.username,
   ip_address: req.ip,
-  user_agent: req.get('User-Agent')
+  user_agent: req.get("User-Agent"),
 });
 ```
 
@@ -351,33 +351,29 @@ logger.info('User authenticated', {
 
 ```javascript
 // auth.test.js
-const request = require('supertest');
-const app = require('../app');
+const request = require("supertest");
+const app = require("../app");
 
-describe('Authentication Service', () => {
-  test('should authenticate valid user', async () => {
-    const response = await request(app)
-      .post('/auth/login')
-      .send({
-        username: 'testuser',
-        password: 'password123'
-      });
-    
+describe("Authentication Service", () => {
+  test("should authenticate valid user", async () => {
+    const response = await request(app).post("/auth/login").send({
+      username: "testuser",
+      password: "password123",
+    });
+
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('token');
-    expect(response.body).toHaveProperty('user');
+    expect(response.body).toHaveProperty("token");
+    expect(response.body).toHaveProperty("user");
   });
-  
-  test('should reject invalid credentials', async () => {
-    const response = await request(app)
-      .post('/auth/login')
-      .send({
-        username: 'testuser',
-        password: 'wrongpassword'
-      });
-    
+
+  test("should reject invalid credentials", async () => {
+    const response = await request(app).post("/auth/login").send({
+      username: "testuser",
+      password: "wrongpassword",
+    });
+
     expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('error');
+    expect(response.body).toHaveProperty("error");
   });
 });
 ```
@@ -386,13 +382,13 @@ describe('Authentication Service', () => {
 
 ```javascript
 // integration.test.js
-describe('gRPC Integration Tests', () => {
-  test('should validate token via gRPC', async () => {
-    const client = new AuthServiceClient('localhost:8000');
-    
+describe("gRPC Integration Tests", () => {
+  test("should validate token via gRPC", async () => {
+    const client = new AuthServiceClient("localhost:8000");
+
     const request = new TokenRequest();
     request.setToken(validToken);
-    
+
     const response = await client.validateToken(request);
     expect(response.getValid()).toBe(true);
   });
@@ -404,7 +400,7 @@ describe('gRPC Integration Tests', () => {
 ### Connection Pooling
 
 ```javascript
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -421,10 +417,10 @@ const pool = new Pool({
 ### Caching Strategy
 
 ```javascript
-const Redis = require('ioredis');
+const Redis = require("ioredis");
 
 const redis = new Redis({
-  host: process.env.REDIS_HOST || 'localhost',
+  host: process.env.REDIS_HOST || "localhost",
   port: process.env.REDIS_PORT || 6379,
 });
 
@@ -432,14 +428,14 @@ const redis = new Redis({
 async function validateTokenWithCache(token) {
   const cacheKey = `token:${token}`;
   const cached = await redis.get(cacheKey);
-  
+
   if (cached) {
     return JSON.parse(cached);
   }
-  
+
   const result = await validateToken(token);
   await redis.setex(cacheKey, 300, JSON.stringify(result)); // 5 minutes
-  
+
   return result;
 }
 ```
@@ -496,10 +492,10 @@ spec:
   template:
     spec:
       containers:
-      - name: vibrox-auth
-        image: vibrox-auth:latest
-        ports:
-        - containerPort: 8000
+        - name: vibrox-auth
+          image: vibrox-auth:latest
+          ports:
+            - containerPort: 8000
 ```
 
 ### Load Balancing
@@ -514,8 +510,8 @@ spec:
   selector:
     app: vibrox-auth
   ports:
-  - port: 8000
-    targetPort: 8000
+    - port: 8000
+      targetPort: 8000
   type: ClusterIP
 ```
 
@@ -558,12 +554,12 @@ grpcurl -plaintext localhost:8000 grpc.health.v1.Health/Check
 
 ```javascript
 // Enable debug logging
-process.env.DEBUG = 'vibrox-auth:*';
+process.env.DEBUG = "vibrox-auth:*";
 
 // Add debug statements
-const debug = require('debug')('vibrox-auth:auth');
+const debug = require("debug")("vibrox-auth:auth");
 
-debug('Processing authentication request for user: %s', username);
+debug("Processing authentication request for user: %s", username);
 ```
 
 ## 🔗 Integration Examples
@@ -586,19 +582,19 @@ func main() {
         log.Fatal(err)
     }
     defer conn.Close()
-    
+
     client := pb.NewAuthServiceClient(conn)
-    
+
     // Authenticate user
     resp, err := client.Authenticate(context.Background(), &pb.AuthRequest{
         Username: "testuser",
         Password: "password123",
     })
-    
+
     if err != nil {
         log.Fatal(err)
     }
-    
+
     log.Printf("Token: %s", resp.Token)
 }
 ```
@@ -606,25 +602,25 @@ func main() {
 ### Node.js Client Integration
 
 ```javascript
-const { AuthServiceClient } = require('./auth_grpc_pb');
-const { AuthRequest } = require('./auth_pb');
+const { AuthServiceClient } = require("./auth_grpc_pb");
+const { AuthRequest } = require("./auth_pb");
 
-const client = new AuthServiceClient('localhost:8000');
+const client = new AuthServiceClient("localhost:8000");
 
 async function authenticateUser(username, password) {
   const request = new AuthRequest();
   request.setUsername(username);
   request.setPassword(password);
-  
+
   try {
     const response = await client.authenticate(request);
     return {
       success: response.getSuccess(),
       token: response.getToken(),
-      user: response.getUser()
+      user: response.getUser(),
     };
   } catch (error) {
-    console.error('Authentication failed:', error);
+    console.error("Authentication failed:", error);
     throw error;
   }
 }
@@ -632,4 +628,4 @@ async function authenticateUser(username, password) {
 
 ---
 
-*This service documentation should be updated when significant changes are made to the authentication service. Use `/adr` to create Architecture Decision Records for major authentication decisions.*
+_This service documentation should be updated when significant changes are made to the authentication service. Use `/adr` to create Architecture Decision Records for major authentication decisions._

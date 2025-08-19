@@ -30,6 +30,7 @@ git checkout -b feature/your-feature-name
 ### Branch Naming
 
 Use descriptive branch names:
+
 - `feature/user-authentication`
 - `bugfix/database-connection-issue`
 - `docs/api-documentation-update`
@@ -47,6 +48,7 @@ docs(api): update user management API documentation
 ```
 
 ### Types
+
 - **feat**: New feature
 - **fix**: Bug fix
 - **docs**: Documentation changes
@@ -72,11 +74,11 @@ func (s *UserService) CreateUser(user *models.User) (*models.User, error) {
     if err := s.validateUser(user); err != nil {
         return nil, fmt.Errorf("invalid user data: %w", err)
     }
-    
+
     if err := s.db.Create(user).Error; err != nil {
         return nil, fmt.Errorf("failed to create user: %w", err)
     }
-    
+
     return user, nil
 }
 ```
@@ -95,12 +97,12 @@ async function authenticateUser(username, password) {
         if (!user) {
             throw new Error('User not found');
         }
-        
+
         const isValid = await bcrypt.compare(password, user.passwordHash);
         if (!isValid) {
             throw new Error('Invalid password');
         }
-        
+
         return generateToken(user);
     } catch (error) {
         logger.error('Authentication failed', { username, error });
@@ -124,10 +126,10 @@ func TestUserService_CreateUser(t *testing.T) {
     // Arrange
     service := NewUserService(mockDB)
     user := &models.User{Name: "John", Email: "john@example.com"}
-    
+
     // Act
     result, err := service.CreateUser(user)
-    
+
     // Assert
     assert.NoError(t, err)
     assert.NotNil(t, result)
@@ -138,19 +140,19 @@ func TestUserService_CreateUser(t *testing.T) {
 ### Node.js Testing
 
 ```javascript
-describe('AuthService', () => {
-    it('should authenticate valid user', async () => {
-        // Arrange
-        const username = 'testuser';
-        const password = 'password123';
-        
-        // Act
-        const result = await authService.authenticate(username, password);
-        
-        // Assert
-        expect(result.success).to.be.true;
-        expect(result.token).to.not.be.empty;
-    });
+describe("AuthService", () => {
+  it("should authenticate valid user", async () => {
+    // Arrange
+    const username = "testuser";
+    const password = "password123";
+
+    // Act
+    const result = await authService.authenticate(username, password);
+
+    // Assert
+    expect(result.success).to.be.true;
+    expect(result.token).to.not.be.empty;
+  });
 });
 ```
 
@@ -167,20 +169,24 @@ describe('AuthService', () => {
 
 ```markdown
 ## Description
+
 Brief description of changes.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -227,7 +233,7 @@ func (s *UserService) CreateUser(user *models.User) (*models.User, error) {
  * @returns {Promise<Object>} Authentication result
  */
 async function authenticateUser(username, password) {
-    // Implementation
+  // Implementation
 }
 ```
 
@@ -264,10 +270,11 @@ We appreciate all contributors:
 - **Feature Requesters**: Users who suggest improvements
 
 All contributors are recognized in:
+
 - Contributors list in README
 - Release notes
 - Special thanks for significant contributions
 
 ---
 
-*These guidelines should be updated as the project evolves. Submit a pull request if you have suggestions for improvements.*
+_These guidelines should be updated as the project evolves. Submit a pull request if you have suggestions for improvements._

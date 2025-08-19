@@ -54,7 +54,7 @@ curl http://localhost:8080/health
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Database
@@ -128,16 +128,17 @@ volumes:
 
 ### Service Endpoints
 
-| Service | Port | Description | Health Check |
-|---------|------|-------------|--------------|
-| **vibrox-core** | 8080 | User management API | `GET /health` |
+| Service         | Port | Description            | Health Check      |
+| --------------- | ---- | ---------------------- | ----------------- |
+| **vibrox-core** | 8080 | User management API    | `GET /health`     |
 | **vibrox-auth** | 8000 | Authentication service | gRPC health check |
-| **vibrox-echo** | 9000 | Logging service | gRPC health check |
-| **PostgreSQL** | 5432 | Database | `pg_isready` |
+| **vibrox-echo** | 9000 | Logging service        | gRPC health check |
+| **PostgreSQL**  | 5432 | Database               | `pg_isready`      |
 
 ### Environment Variables
 
 #### Database Configuration
+
 ```bash
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=server
@@ -145,6 +146,7 @@ POSTGRES_DB=postgres
 ```
 
 #### Service Configuration
+
 ```bash
 # vibrox-core
 DB_HOST=db
@@ -242,6 +244,7 @@ ls -la ./vibrox-echo/logs/
 ### Service Discovery
 
 Services communicate using Docker Compose service names:
+
 - `db` - PostgreSQL database
 - `auth` - Authentication service
 - `logger` - Logging service
@@ -334,10 +337,10 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: '0.5'
+          cpus: "0.5"
         reservations:
           memory: 256M
-          cpus: '0.25'
+          cpus: "0.25"
 ```
 
 #### Health Checks
@@ -468,4 +471,4 @@ docker-compose up --build
 
 ---
 
-*This guide should be updated when Docker Compose configuration changes or new services are added to the stack.*
+_This guide should be updated when Docker Compose configuration changes or new services are added to the stack._

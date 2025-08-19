@@ -10,16 +10,16 @@ The Vibrox Stack is a microservices-based architecture designed for scalability,
 graph TB
     Client[Client Applications] --> App[vibrox-core<br/>User Management]
     Client --> Auth[vibrox-auth<br/>Authentication]
-    
+
     App --> DB[(PostgreSQL<br/>Database)]
     App --> Auth
     App --> Logger[vibrox-echo<br/>Logging Service]
-    
+
     Auth --> Logger
     Auth --> DB
-    
+
     Logger --> Logger[(Log Files<br/>Local Storage)]
-    
+
     subgraph "Infrastructure"
         Docker[Docker Compose<br/>Local Development]
         K8s[Kubernetes<br/>Production]
@@ -29,6 +29,7 @@ graph TB
 ## 🧩 Core Components
 
 ### 1. vibrox-core (User Management Service)
+
 - **Technology**: Go with REST + gRPC APIs
 - **Purpose**: Primary user management and business logic
 - **Responsibilities**:
@@ -38,6 +39,7 @@ graph TB
   - REST API endpoints for client applications
 
 ### 2. vibrox-auth (Authentication Service)
+
 - **Technology**: Node.js with gRPC
 - **Purpose**: JWT-based authentication and authorization
 - **Responsibilities**:
@@ -47,6 +49,7 @@ graph TB
   - Security enforcement
 
 ### 3. vibrox-echo (Logging Service)
+
 - **Technology**: Go with gRPC
 - **Purpose**: Centralized logging and monitoring
 - **Responsibilities**:
@@ -56,6 +59,7 @@ graph TB
   - Monitoring integration
 
 ### 4. PostgreSQL Database
+
 - **Purpose**: Primary data store
 - **Responsibilities**:
   - User data persistence
@@ -79,7 +83,7 @@ sequenceDiagram
     participant Auth as vibrox-auth
     participant DB as PostgreSQL
     participant Logger as vibrox-echo
-    
+
     Client->>Core: REST API Request
     Core->>Auth: gRPC Auth Request
     Auth->>DB: Validate User
@@ -92,11 +96,13 @@ sequenceDiagram
 ## 🚀 Deployment Architecture
 
 ### Development Environment
+
 - **Docker Compose**: Local development with service orchestration
 - **Volume Mounts**: Persistent data and log storage
 - **Network**: Internal service communication
 
 ### Production Environment
+
 - **Kubernetes**: Container orchestration and scaling
 - **Services**: Load balancing and service discovery
 - **Persistent Volumes**: Data and log persistence
@@ -105,12 +111,14 @@ sequenceDiagram
 ## 🔐 Security Architecture
 
 ### Authentication Flow
+
 1. Client authenticates via vibrox-auth
 2. JWT tokens issued for authenticated sessions
 3. Tokens validated on subsequent requests
 4. Service-to-service communication secured
 
 ### Security Measures
+
 - JWT-based authentication
 - gRPC for secure inter-service communication
 - Environment-based configuration
@@ -119,12 +127,14 @@ sequenceDiagram
 ## 📈 Scalability Considerations
 
 ### Horizontal Scaling
+
 - Stateless service design
 - Database connection pooling
 - Load balancing support
 - Container-based deployment
 
 ### Performance Optimization
+
 - gRPC for high-performance inter-service calls
 - Connection pooling
 - Efficient logging strategies
@@ -132,15 +142,15 @@ sequenceDiagram
 
 ## 🔧 Technology Stack
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **vibrox-core** | Go | User management and business logic |
-| **vibrox-auth** | Node.js | Authentication and authorization |
-| **vibrox-echo** | Go | Centralized logging |
-| **Database** | PostgreSQL | Data persistence |
-| **Containerization** | Docker | Service packaging |
-| **Orchestration** | Docker Compose / Kubernetes | Deployment and scaling |
-| **Communication** | gRPC / REST | Service communication |
+| Component            | Technology                  | Purpose                            |
+| -------------------- | --------------------------- | ---------------------------------- |
+| **vibrox-core**      | Go                          | User management and business logic |
+| **vibrox-auth**      | Node.js                     | Authentication and authorization   |
+| **vibrox-echo**      | Go                          | Centralized logging                |
+| **Database**         | PostgreSQL                  | Data persistence                   |
+| **Containerization** | Docker                      | Service packaging                  |
+| **Orchestration**    | Docker Compose / Kubernetes | Deployment and scaling             |
+| **Communication**    | gRPC / REST                 | Service communication              |
 
 ## 🎯 Design Principles
 
@@ -162,4 +172,4 @@ sequenceDiagram
 
 ---
 
-*This architecture document should be updated when significant architectural changes are made. Use `/adr` to create Architecture Decision Records for major decisions.*
+_This architecture document should be updated when significant architectural changes are made. Use `/adr` to create Architecture Decision Records for major decisions._

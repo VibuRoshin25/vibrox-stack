@@ -4,11 +4,11 @@ This guide covers deploying the Vibrox Stack in different environments, from loc
 
 ## 🎯 Deployment Options
 
-| Environment | Method | Use Case |
-|-------------|--------|----------|
-| **Local Development** | Docker Compose | Development and testing |
-| **Staging** | Kubernetes | Pre-production testing |
-| **Production** | Kubernetes | Live production environment |
+| Environment           | Method         | Use Case                    |
+| --------------------- | -------------- | --------------------------- |
+| **Local Development** | Docker Compose | Development and testing     |
+| **Staging**           | Kubernetes     | Pre-production testing      |
+| **Production**        | Kubernetes     | Live production environment |
 
 ## 🐳 Docker Compose Deployment
 
@@ -33,12 +33,12 @@ docker-compose up -d --build
 
 ### Service Endpoints
 
-| Service | Port | Description |
-|---------|------|-------------|
-| **vibrox-core** | 8080 | User management API |
+| Service         | Port | Description            |
+| --------------- | ---- | ---------------------- |
+| **vibrox-core** | 8080 | User management API    |
 | **vibrox-auth** | 8000 | Authentication service |
-| **vibrox-echo** | 9000 | Logging service |
-| **PostgreSQL** | 5432 | Database |
+| **vibrox-echo** | 9000 | Logging service        |
+| **PostgreSQL**  | 5432 | Database               |
 
 ### Environment Configuration
 
@@ -84,6 +84,7 @@ docker-compose exec db pg_dump -U postgres postgres > backup.sql
 ### Cluster Setup
 
 #### Local Development (Minikube)
+
 ```bash
 # Install Minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -97,6 +98,7 @@ minikube addons enable ingress
 ```
 
 #### Cloud Deployment
+
 - **AWS EKS**: Use eksctl or AWS Console
 - **Google GKE**: Use gcloud CLI or Console
 - **Azure AKS**: Use Azure CLI or Portal
@@ -121,6 +123,7 @@ kubectl logs -f deployment/vibrox-echo
 ### Service Configuration
 
 #### Database (PostgreSQL)
+
 ```bash
 # Deploy database
 kubectl apply -f manifests/db-deployment.yml
@@ -131,6 +134,7 @@ kubectl apply -f volume-manifests/
 ```
 
 #### Application Services
+
 ```bash
 # Deploy core services
 kubectl apply -f manifests/app-deployment.yml
@@ -174,23 +178,23 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: vibrox.local
-    http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: app-service
-            port:
-              number: 8080
-      - path: /auth
-        pathType: Prefix
-        backend:
-          service:
-            name: auth-service
-            port:
-              number: 8000
+    - host: vibrox.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 8080
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 8000
 ```
 
 ## 🔧 Production Considerations
@@ -198,6 +202,7 @@ spec:
 ### Security
 
 1. **Secrets Management**
+
    ```bash
    # Use Kubernetes secrets or external secret managers
    kubectl create secret generic db-credentials \
@@ -206,6 +211,7 @@ spec:
    ```
 
 2. **Network Policies**
+
    ```yaml
    apiVersion: networking.k8s.io/v1
    kind: NetworkPolicy
@@ -214,14 +220,14 @@ spec:
    spec:
      podSelector: {}
      policyTypes:
-     - Ingress
-     - Egress
+       - Ingress
+       - Egress
      ingress:
-     - from:
-       - namespaceSelector: {}
-       ports:
-       - protocol: TCP
-         port: 8080
+       - from:
+           - namespaceSelector: {}
+         ports:
+           - protocol: TCP
+             port: 8080
    ```
 
 3. **RBAC Configuration**
@@ -235,6 +241,7 @@ spec:
 ### Monitoring and Logging
 
 1. **Prometheus Integration**
+
    ```yaml
    # Add Prometheus annotations to deployments
    annotations:
@@ -272,15 +279,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build and push images
-      run: |
-        docker build -t vibrox-core ./vibrox-core
-        docker build -t vibrox-auth ./vibrox-auth
-        docker build -t vibrox-echo ./vibrox-echo
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f manifests/
+      - uses: actions/checkout@v2
+      - name: Build and push images
+        run: |
+          docker build -t vibrox-core ./vibrox-core
+          docker build -t vibrox-auth ./vibrox-auth
+          docker build -t vibrox-echo ./vibrox-echo
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f manifests/
 ```
 
 ### Blue-Green Deployment
@@ -301,12 +308,14 @@ kubectl patch service app-service -p '{"spec":{"selector":{"version":"v1"}}}'
 ### Common Issues
 
 1. **Service Discovery**
+
    ```bash
    # Check DNS resolution
    kubectl run test --image=busybox --rm -it --restart=Never -- nslookup auth-service
    ```
 
 2. **Database Connectivity**
+
    ```bash
    # Test database connection
    kubectl run test --image=postgres --rm -it --restart=Never -- psql -h postgres-service -U postgres
@@ -362,4 +371,4 @@ readinessProbe:
 
 ---
 
-*For detailed service-specific deployment instructions, see the individual service documentation.*
+_For detailed service-specific deployment instructions, see the individual service documentation._

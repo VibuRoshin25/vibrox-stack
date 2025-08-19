@@ -23,6 +23,7 @@ Welcome to the Vibrox Stack! This guide will help you get up and running with th
 ### Installation
 
 #### Docker & Docker Compose
+
 ```bash
 # Ubuntu/Debian
 sudo apt update
@@ -36,6 +37,7 @@ brew install docker docker-compose
 ```
 
 #### Go
+
 ```bash
 # Ubuntu/Debian
 sudo apt install golang-go
@@ -48,6 +50,7 @@ brew install go
 ```
 
 #### Node.js
+
 ```bash
 # Ubuntu/Debian
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -93,7 +96,7 @@ npm --version
 Each service may have its own environment configuration. Check the individual service directories:
 
 - `vibrox-core/` - Go service configuration
-- `vibrox-auth/` - Node.js service configuration  
+- `vibrox-auth/` - Node.js service configuration
 - `vibrox-echo/` - Go service configuration
 
 ## 🐳 Development Environment
@@ -114,6 +117,7 @@ docker-compose logs -f
 ### Individual Service Development
 
 #### vibrox-core (Go)
+
 ```bash
 cd vibrox-core
 go mod download
@@ -121,6 +125,7 @@ go run main.go
 ```
 
 #### vibrox-auth (Node.js)
+
 ```bash
 cd vibrox-auth
 npm install
@@ -128,6 +133,7 @@ npm start
 ```
 
 #### vibrox-echo (Go)
+
 ```bash
 cd vibrox-echo
 go mod download
@@ -166,6 +172,7 @@ vibrox-stack/
 ### 2. Making Changes
 
 1. **Create a feature branch**:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -173,16 +180,18 @@ vibrox-stack/
 2. **Make your changes** in the appropriate service directory
 
 3. **Test your changes**:
+
    ```bash
    # Test the entire stack
    docker-compose up --build
-   
+
    # Test individual services
    cd vibrox-core && go test ./...
    cd vibrox-auth && npm test
    ```
 
 4. **Commit your changes**:
+
    ```bash
    git add .
    git commit -m "feat: add your feature description"
@@ -193,6 +202,7 @@ vibrox-stack/
 ### 3. Testing
 
 #### Unit Tests
+
 ```bash
 # Go services
 cd vibrox-core
@@ -207,6 +217,7 @@ npm test
 ```
 
 #### Integration Tests
+
 ```bash
 # Start the stack
 docker-compose up -d
@@ -221,16 +232,19 @@ docker-compose down
 ## 📚 Learning Resources
 
 ### Architecture
+
 - [Architecture Overview](../architecture/overview.md)
 - [Service Documentation](../services/)
 - [ADR Index](../adr/README.md)
 
 ### Development
+
 - [Contributing Guidelines](contributing.md)
 - [Testing Guide](testing.md)
 - [Development Setup](development-setup.md)
 
 ### Deployment
+
 - [Docker Compose Setup](../deployment/docker-compose.md)
 - [Kubernetes Setup](../deployment/kubernetes.md)
 
@@ -239,6 +253,7 @@ docker-compose down
 ### Common Issues
 
 #### Docker Issues
+
 ```bash
 # Reset Docker
 docker system prune -a
@@ -250,6 +265,7 @@ docker-compose config
 ```
 
 #### Database Issues
+
 ```bash
 # Reset database
 docker-compose down -v
@@ -257,6 +273,7 @@ docker-compose up -d db
 ```
 
 #### Service Communication Issues
+
 ```bash
 # Check service logs
 docker-compose logs vibrox-core
@@ -292,4 +309,4 @@ docker-compose exec vibrox-core ping vibrox-auth
 
 ---
 
-*Need help? Check the [Contributing Guidelines](contributing.md) or create an issue in the repository.*
+_Need help? Check the [Contributing Guidelines](contributing.md) or create an issue in the repository._

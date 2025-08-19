@@ -86,7 +86,7 @@ ENCRYPTION_KEY=your-encryption-key   # Data encryption key
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -144,10 +144,10 @@ metadata:
   namespace: vibrox
 type: Opaque
 data:
-  DB_PASSWORD: c2VydmVy  # base64 encoded
-  JWT_SECRET: eW91ci1zZWNyZXQ=  # base64 encoded
-  SESSION_SECRET: c2Vzc2lvbi1zZWNyZXQ=  # base64 encoded
-  ENCRYPTION_KEY: ZW5jcnlwdGlvbi1rZXk=  # base64 encoded
+  DB_PASSWORD: c2VydmVy # base64 encoded
+  JWT_SECRET: eW91ci1zZWNyZXQ= # base64 encoded
+  SESSION_SECRET: c2Vzc2lvbi1zZWNyZXQ= # base64 encoded
+  ENCRYPTION_KEY: ZW5jcnlwdGlvbi1rZXk= # base64 encoded
 ```
 
 ## Environment-Specific Configurations
@@ -188,7 +188,7 @@ LOG_MAX_FILES=5
 
 ```yaml
 # docker-compose.dev.yml
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -203,7 +203,7 @@ services:
       - postgres_dev_data:/var/lib/postgresql/data
 
   app:
-    build: 
+    build:
       context: ./vibrox-core
       dockerfile: Dockerfile.dev
     environment:
@@ -348,7 +348,7 @@ export SESSION_SECRET="your-session-secret"
 
 ```yaml
 # docker-compose.yml with secrets
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -430,20 +430,20 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
-  - hosts:
-    - api.vibrox.com
-    secretName: vibrox-tls
+    - hosts:
+        - api.vibrox.com
+      secretName: vibrox-tls
   rules:
-  - host: api.vibrox.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: vibrox-core-service
-            port:
-              number: 8080
+    - host: api.vibrox.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vibrox-core-service
+                port:
+                  number: 8080
 ```
 
 ## Configuration Validation
@@ -470,15 +470,15 @@ func (c *Config) Validate() error {
     if err := c.Database.Validate(); err != nil {
         return fmt.Errorf("database config: %w", err)
     }
-    
+
     if err := c.Security.Validate(); err != nil {
         return fmt.Errorf("security config: %w", err)
     }
-    
+
     if err := c.Logging.Validate(); err != nil {
         return fmt.Errorf("logging config: %w", err)
     }
-    
+
     return nil
 }
 
@@ -486,19 +486,19 @@ func (c *DatabaseConfig) Validate() error {
     if c.Host == "" {
         return fmt.Errorf("DB_HOST is required")
     }
-    
+
     if c.Port <= 0 || c.Port > 65535 {
         return fmt.Errorf("invalid DB_PORT: %d", c.Port)
     }
-    
+
     if c.User == "" {
         return fmt.Errorf("DB_USER is required")
     }
-    
+
     if c.Password == "" {
         return fmt.Errorf("DB_PASSWORD is required")
     }
-    
+
     return nil
 }
 ```
@@ -526,10 +526,10 @@ func TestConfigValidation(t *testing.T) {
             Name:     "vibrox",
         },
     }
-    
+
     err := config.Validate()
     assert.NoError(t, err)
-    
+
     // Test invalid configuration
     config.Database.Host = ""
     err = config.Validate()
@@ -590,7 +590,7 @@ import (
 func CheckDatabaseConfig(ctx context.Context, db *sql.DB) error {
     ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
     defer cancel()
-    
+
     return db.PingContext(ctx)
 }
 
@@ -599,13 +599,13 @@ func CheckEnvironmentConfig() error {
         "DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME",
         "JWT_SECRET", "AUTH_HOST", "LOGGER_HOST",
     }
-    
+
     for _, env := range required {
         if os.Getenv(env) == "" {
             return fmt.Errorf("required environment variable %s is not set", env)
         }
     }
-    
+
     return nil
 }
 ```
@@ -657,4 +657,4 @@ kubectl apply --dry-run=client -f manifests/
 
 ---
 
-*This environment configuration guide should be updated when new configuration options or deployment environments are added.*
+_This environment configuration guide should be updated when new configuration options or deployment environments are added._

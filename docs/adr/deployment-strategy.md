@@ -7,11 +7,13 @@ Accepted
 ## Context
 
 The Vibrox Stack consists of three microservices that need to be deployed across different environments:
+
 - Development environment for local development
 - Staging environment for testing
 - Production environment for live services
 
 We need to choose deployment strategies that provide:
+
 - Consistent environments across development and production
 - Easy local development setup
 - Scalability and high availability in production
@@ -22,6 +24,7 @@ We need to choose deployment strategies that provide:
 ## Decision
 
 We will use:
+
 - **Docker Compose for development and local testing**
 - **Kubernetes for staging and production deployment**
 
@@ -30,6 +33,7 @@ We will use:
 #### Docker Compose for Development
 
 **Advantages:**
+
 - **Simplicity**: Easy to understand and use for developers
 - **Local Development**: Fast iteration and debugging capabilities
 - **Service Orchestration**: Automatic service discovery and networking
@@ -38,6 +42,7 @@ We will use:
 - **Resource Efficiency**: Lower resource requirements for development
 
 **Implementation:**
+
 - Single `docker-compose.yml` file for all services
 - Volume mounts for source code and persistent data
 - Environment variables for configuration
@@ -46,6 +51,7 @@ We will use:
 #### Kubernetes for Production
 
 **Advantages:**
+
 - **Scalability**: Horizontal and vertical scaling capabilities
 - **High Availability**: Automatic failover and recovery
 - **Service Discovery**: Built-in service discovery and load balancing
@@ -55,6 +61,7 @@ We will use:
 - **Monitoring**: Built-in monitoring and logging capabilities
 
 **Implementation:**
+
 - Kubernetes manifests for each service
 - Persistent volume claims for data storage
 - Ingress controllers for external access
@@ -91,7 +98,7 @@ We will use:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -160,6 +167,7 @@ volumes:
 ### Kubernetes Manifests
 
 #### Database Deployment
+
 ```yaml
 # manifests/db-deployment.yml
 apiVersion: apps/v1
@@ -177,30 +185,31 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:15
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_USER
-          value: postgres
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
-        - name: POSTGRES_DB
-          value: postgres
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: POSTGRES_DB
+              value: postgres
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
       volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
 ```
 
 #### Service Deployment
+
 ```yaml
 # manifests/app-deployment.yml
 apiVersion: apps/v1
@@ -218,45 +227,45 @@ spec:
         app: vibrox-core
     spec:
       containers:
-      - name: vibrox-core
-        image: vibrox-core:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DB_HOST
-          value: postgres-service
-        - name: DB_USER
-          value: postgres
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
-        - name: DB_NAME
-          value: postgres
-        - name: AUTH_HOST
-          value: vibrox-auth-service:8000
-        - name: LOGGER_HOST
-          value: vibrox-echo-service:9000
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: vibrox-core
+          image: vibrox-core:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: postgres-service
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: DB_NAME
+              value: postgres
+            - name: AUTH_HOST
+              value: vibrox-auth-service:8000
+            - name: LOGGER_HOST
+              value: vibrox-echo-service:9000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 ## Deployment Architecture
@@ -268,31 +277,31 @@ graph TB
         LocalVolumes[Local Volumes]
         DevNetwork[Development Network]
     end
-    
+
     subgraph "Production Environment"
         K8sCluster[Kubernetes Cluster]
         Ingress[Ingress Controller]
         LoadBalancer[Load Balancer]
         PersistentVolumes[Persistent Volumes]
     end
-    
+
     subgraph "Services"
         Core[vibrox-core]
         Auth[vibrox-auth]
         Logger[vibrox-echo]
         DB[(PostgreSQL)]
     end
-    
+
     DockerCompose --> Core
     DockerCompose --> Auth
     DockerCompose --> Logger
     DockerCompose --> DB
-    
+
     K8sCluster --> Core
     K8sCluster --> Auth
     K8sCluster --> Logger
     K8sCluster --> DB
-    
+
     Ingress --> LoadBalancer
     LoadBalancer --> Core
     LoadBalancer --> Auth
@@ -363,7 +372,7 @@ metadata:
   name: db-secret
 type: Opaque
 data:
-  password: c2VydmVy  # base64 encoded
+  password: c2VydmVy # base64 encoded
 ```
 
 ## Monitoring and Observability
@@ -407,9 +416,9 @@ logging:
 # Kubernetes logging
 spec:
   containers:
-  - name: vibrox-core
-    image: vibrox-core:latest
-    # Logs automatically collected by Kubernetes
+    - name: vibrox-core
+      image: vibrox-core:latest
+      # Logs automatically collected by Kubernetes
 ```
 
 ## Scaling Strategy
@@ -430,12 +439,12 @@ spec:
   minReplicas: 3
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ```
 
 ### Resource Management
@@ -455,11 +464,13 @@ resources:
 ### 1. Docker Swarm
 
 **Pros:**
+
 - Native Docker orchestration
 - Simpler than Kubernetes
 - Good for smaller deployments
 
 **Cons:**
+
 - Less feature-rich than Kubernetes
 - Smaller ecosystem
 - Limited enterprise features
@@ -467,11 +478,13 @@ resources:
 ### 2. Nomad
 
 **Pros:**
+
 - Simple and lightweight
 - Multi-datacenter support
 - Good for mixed workloads
 
 **Cons:**
+
 - Smaller ecosystem
 - Less Kubernetes integration
 - Limited enterprise adoption
@@ -479,11 +492,13 @@ resources:
 ### 3. AWS ECS/Fargate
 
 **Pros:**
+
 - Managed service
 - Good AWS integration
 - Serverless option available
 
 **Cons:**
+
 - Vendor lock-in
 - Higher costs
 - Limited portability
@@ -491,11 +506,13 @@ resources:
 ### 4. Bare Metal Deployment
 
 **Pros:**
+
 - Maximum control
 - No virtualization overhead
 - Cost-effective for large scale
 
 **Cons:**
+
 - High operational complexity
 - Manual scaling
 - Limited automation
@@ -515,4 +532,4 @@ resources:
 
 ---
 
-*This ADR should be reviewed when considering deployment technology changes, scaling strategies, or when adding new deployment environments.*
+_This ADR should be reviewed when considering deployment technology changes, scaling strategies, or when adding new deployment environments._

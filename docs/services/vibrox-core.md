@@ -17,7 +17,7 @@ graph TB
     Core --> Auth[vibrox-auth<br/>gRPC]
     Core --> DB[(PostgreSQL<br/>Database)]
     Core --> Logger[vibrox-echo<br/>gRPC]
-    
+
     subgraph "vibrox-core Components"
         REST[REST API Layer]
         Business[Business Logic]
@@ -31,15 +31,15 @@ graph TB
 
 ### Environment Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `DB_HOST` | Database host | `db` | Yes |
-| `DB_USER` | Database username | `postgres` | Yes |
-| `DB_PASSWORD` | Database password | `server` | Yes |
-| `DB_NAME` | Database name | `postgres` | Yes |
-| `AUTH_HOST` | Authentication service host | `auth:8000` | Yes |
-| `LOGGER_HOST` | Logging service host | `logger:9000` | Yes |
-| `PORT` | Service port | `8080` | No |
+| Variable      | Description                 | Default       | Required |
+| ------------- | --------------------------- | ------------- | -------- |
+| `DB_HOST`     | Database host               | `db`          | Yes      |
+| `DB_USER`     | Database username           | `postgres`    | Yes      |
+| `DB_PASSWORD` | Database password           | `server`      | Yes      |
+| `DB_NAME`     | Database name               | `postgres`    | Yes      |
+| `AUTH_HOST`   | Authentication service host | `auth:8000`   | Yes      |
+| `LOGGER_HOST` | Logging service host        | `logger:9000` | Yes      |
+| `PORT`        | Service port                | `8080`        | No       |
 
 ### Docker Configuration
 
@@ -147,6 +147,7 @@ GET /metrics
 ### Response Formats
 
 #### Success Response
+
 ```json
 {
   "success": true,
@@ -161,6 +162,7 @@ GET /metrics
 ```
 
 #### Error Response
+
 ```json
 {
   "success": false,
@@ -234,6 +236,7 @@ CREATE INDEX idx_sessions_token_hash ON sessions(token_hash);
 ### gRPC Clients
 
 #### Authentication Service Client
+
 ```go
 // Connect to auth service
 authClient := grpc.NewClient(authHost)
@@ -245,6 +248,7 @@ token, err := authClient.ValidateToken(ctx, &pb.TokenRequest{
 ```
 
 #### Logging Service Client
+
 ```go
 // Connect to logging service
 loggerClient := grpc.NewClient(loggerHost)
@@ -260,6 +264,7 @@ _, err := loggerClient.LogEvent(ctx, &pb.LogRequest{
 ## 🧪 Testing
 
 ### Unit Tests
+
 ```bash
 # Run all tests
 go test ./...
@@ -272,6 +277,7 @@ go test -v ./handlers -run TestCreateUser
 ```
 
 ### Integration Tests
+
 ```bash
 # Start test environment
 docker-compose -f docker-compose.test.yml up -d
@@ -284,6 +290,7 @@ docker-compose -f docker-compose.test.yml down
 ```
 
 ### API Tests
+
 ```bash
 # Using curl
 curl -X POST http://localhost:8080/api/auth/login \
@@ -323,6 +330,7 @@ logger.Info("User created",
 ## 🚀 Deployment
 
 ### Docker Build
+
 ```bash
 # Build image
 docker build -t vibrox-core ./vibrox-core
@@ -339,6 +347,7 @@ docker run -p 8080:8080 \
 ```
 
 ### Kubernetes Deployment
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -355,25 +364,25 @@ spec:
         app: vibrox-core
     spec:
       containers:
-      - name: vibrox-core
-        image: vibrox-core:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DB_HOST
-          value: "postgres-service"
-        - name: AUTH_HOST
-          value: "auth-service:8000"
-        - name: LOGGER_HOST
-          value: "log-service:9000"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
+        - name: vibrox-core
+          image: vibrox-core:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: AUTH_HOST
+              value: "auth-service:8000"
+            - name: LOGGER_HOST
+              value: "log-service:9000"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
 ```
 
 ## 🔍 Troubleshooting
@@ -381,6 +390,7 @@ spec:
 ### Common Issues
 
 1. **Database Connection**
+
    ```bash
    # Check database connectivity
    docker-compose exec app ping db
@@ -388,19 +398,21 @@ spec:
    ```
 
 2. **Service Communication**
+
    ```bash
    # Check auth service connectivity
    docker-compose exec app ping auth
-   
+
    # Check logger service connectivity
    docker-compose exec app ping logger
    ```
 
 3. **Log Analysis**
+
    ```bash
    # View service logs
    docker-compose logs vibrox-core
-   
+
    # Follow logs
    docker-compose logs -f vibrox-core
    ```
@@ -427,4 +439,4 @@ curl http://localhost:8080/metrics
 
 ---
 
-*For development setup and contribution guidelines, see the [Developer Onboarding](../onboarding/README.md) guide.*
+_For development setup and contribution guidelines, see the [Developer Onboarding](../onboarding/README.md) guide._

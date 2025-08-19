@@ -7,12 +7,14 @@ Accepted
 ## Context
 
 The Vibrox Stack requires a reliable, scalable database solution to store:
+
 - User data and profiles
 - Authentication information
 - Application state
 - Audit logs and metadata
 
 We need to choose a database technology that supports:
+
 - ACID transactions
 - Complex queries and relationships
 - High availability and scalability
@@ -28,30 +30,35 @@ We will use **PostgreSQL** as the primary database for the Vibrox Stack.
 #### PostgreSQL Advantages
 
 **Reliability & ACID Compliance:**
+
 - Full ACID transaction support
 - Data integrity and consistency guarantees
 - Robust error handling and recovery mechanisms
 - Mature and battle-tested in production environments
 
 **Performance & Scalability:**
+
 - Excellent performance for complex queries
 - Advanced indexing capabilities (B-tree, Hash, GIN, GiST)
 - Query optimization and execution planning
 - Support for read replicas and horizontal scaling
 
 **Data Types & Features:**
+
 - Rich set of data types (JSON, JSONB, Arrays, UUID, etc.)
 - Full-text search capabilities
 - Geographic data support (PostGIS extension)
 - Advanced features like triggers, stored procedures, and views
 
 **Ecosystem & Tooling:**
+
 - Extensive ecosystem of tools and libraries
 - Excellent monitoring and administration tools
 - Strong community support and documentation
 - Native support in Go (lib/pq, pgx) and Node.js (pg, sequelize)
 
 **Operational Excellence:**
+
 - Easy backup and restore procedures
 - Point-in-time recovery capabilities
 - Built-in replication and clustering support
@@ -142,6 +149,7 @@ database:
 ### Service Integration
 
 #### Go Services (vibrox-core, vibrox-echo)
+
 ```go
 import (
     "gorm.io/gorm"
@@ -153,15 +161,16 @@ db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 ```
 
 #### Node.js Service (vibrox-auth)
+
 ```javascript
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({
-  host: 'db',
+  host: "db",
   port: 5432,
-  database: 'postgres',
-  user: 'postgres',
-  password: 'server',
+  database: "postgres",
+  user: "postgres",
+  password: "server",
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -177,21 +186,21 @@ graph TB
         Auth[vibrox-auth]
         Logger[vibrox-echo]
     end
-    
+
     subgraph "Database Layer"
         Primary[(PostgreSQL Primary)]
         Replica[(PostgreSQL Replica)]
         Backup[(Backup Storage)]
     end
-    
+
     subgraph "Connection Pool"
         Pool[Connection Pool<br/>Max: 20<br/>Min: 5]
     end
-    
+
     Core --> Pool
     Auth --> Pool
     Logger --> Pool
-    
+
     Pool --> Primary
     Primary --> Replica
     Primary --> Backup
@@ -225,11 +234,13 @@ graph TB
 ### 1. MySQL
 
 **Pros:**
+
 - Widely used and well-documented
 - Good performance for read-heavy workloads
 - Simpler setup and administration
 
 **Cons:**
+
 - Less advanced features compared to PostgreSQL
 - Limited JSON support
 - Less robust for complex queries
@@ -237,11 +248,13 @@ graph TB
 ### 2. MongoDB (NoSQL)
 
 **Pros:**
+
 - Schema flexibility
 - Horizontal scaling
 - JSON-native storage
 
 **Cons:**
+
 - No ACID compliance across documents
 - Complex transactions
 - Less mature ecosystem for our use case
@@ -249,11 +262,13 @@ graph TB
 ### 3. CockroachDB
 
 **Pros:**
+
 - Distributed SQL database
 - Built-in scalability
 - PostgreSQL compatibility
 
 **Cons:**
+
 - Newer technology with less maturity
 - Higher operational complexity
 - Resource requirements
@@ -261,11 +276,13 @@ graph TB
 ### 4. SQLite
 
 **Pros:**
+
 - Simple setup
 - No server required
 - Good for development
 
 **Cons:**
+
 - Limited concurrent access
 - No network access
 - Not suitable for production microservices
@@ -285,4 +302,4 @@ graph TB
 
 ---
 
-*This ADR should be reviewed when considering database technology changes, scaling strategies, or when adding new data storage requirements.*
+_This ADR should be reviewed when considering database technology changes, scaling strategies, or when adding new data storage requirements._

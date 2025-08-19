@@ -12,18 +12,18 @@ graph TB
         Client[Client Applications]
         API[API Gateway]
     end
-    
+
     subgraph "Application Services"
         Core[vibrox-core<br/>User Management<br/>Go + REST/gRPC]
         Auth[vibrox-auth<br/>Authentication<br/>Node.js + gRPC]
         Logger[vibrox-echo<br/>Logging<br/>Go + gRPC]
     end
-    
+
     subgraph "Data Layer"
         DB[(PostgreSQL<br/>Database)]
         Logs[(Log Files)]
     end
-    
+
     Client --> API
     API --> Core
     Core --> Auth
@@ -49,7 +49,7 @@ graph TB
         LoggerClient[Logger Client<br/>gRPC]
         DBClient[Database Client<br/>GORM]
     end
-    
+
     REST --> Business
     Business --> AuthClient
     Business --> LoggerClient
@@ -76,6 +76,7 @@ graph TB
 ### API Endpoints
 
 #### User Management
+
 ```http
 GET    /api/users          # List all users
 GET    /api/users/{id}     # Get user by ID
@@ -85,6 +86,7 @@ DELETE /api/users/{id}     # Delete user
 ```
 
 #### Health & Status
+
 ```http
 GET    /health             # Service health check
 GET    /status             # Service status
@@ -92,15 +94,15 @@ GET    /status             # Service status
 
 ### Configuration
 
-| Environment Variable | Description | Default | Required |
-|---------------------|-------------|---------|----------|
-| `DB_HOST` | Database host | `db` | Yes |
-| `DB_USER` | Database username | `postgres` | Yes |
-| `DB_PASSWORD` | Database password | `server` | Yes |
-| `DB_NAME` | Database name | `postgres` | Yes |
-| `AUTH_HOST` | Auth service host | `auth:8000` | Yes |
-| `LOGGER_HOST` | Logger service host | `logger:9000` | Yes |
-| `PORT` | Service port | `8080` | No |
+| Environment Variable | Description         | Default       | Required |
+| -------------------- | ------------------- | ------------- | -------- |
+| `DB_HOST`            | Database host       | `db`          | Yes      |
+| `DB_USER`            | Database username   | `postgres`    | Yes      |
+| `DB_PASSWORD`        | Database password   | `server`      | Yes      |
+| `DB_NAME`            | Database name       | `postgres`    | Yes      |
+| `AUTH_HOST`          | Auth service host   | `auth:8000`   | Yes      |
+| `LOGGER_HOST`        | Logger service host | `logger:9000` | Yes      |
+| `PORT`               | Service port        | `8080`        | No       |
 
 ## vibrox-auth Service
 
@@ -117,7 +119,7 @@ graph TB
         DBClient[Database Client]
         LoggerClient[Logger Client<br/>gRPC]
     end
-    
+
     GRPC --> JWT
     GRPC --> Crypto
     GRPC --> DBClient
@@ -144,6 +146,7 @@ graph TB
 ### gRPC Services
 
 #### Authentication Service
+
 ```protobuf
 service AuthService {
   rpc Authenticate(AuthRequest) returns (AuthResponse);
@@ -155,16 +158,16 @@ service AuthService {
 
 ### Configuration
 
-| Environment Variable | Description | Default | Required |
-|---------------------|-------------|---------|----------|
-| `JWT_SECRET` | JWT signing secret | - | Yes |
-| `JWT_EXPIRES_IN` | Token expiration time | `24h` | No |
-| `DB_HOST` | Database host | `db` | Yes |
-| `DB_USER` | Database username | `postgres` | Yes |
-| `DB_PASSWORD` | Database password | `server` | Yes |
-| `DB_NAME` | Database name | `postgres` | Yes |
-| `LOGGER_HOST` | Logger service host | `logger:9000` | Yes |
-| `PORT` | Service port | `8000` | No |
+| Environment Variable | Description           | Default       | Required |
+| -------------------- | --------------------- | ------------- | -------- |
+| `JWT_SECRET`         | JWT signing secret    | -             | Yes      |
+| `JWT_EXPIRES_IN`     | Token expiration time | `24h`         | No       |
+| `DB_HOST`            | Database host         | `db`          | Yes      |
+| `DB_USER`            | Database username     | `postgres`    | Yes      |
+| `DB_PASSWORD`        | Database password     | `server`      | Yes      |
+| `DB_NAME`            | Database name         | `postgres`    | Yes      |
+| `LOGGER_HOST`        | Logger service host   | `logger:9000` | Yes      |
+| `PORT`               | Service port          | `8000`        | No       |
 
 ## vibrox-echo Service
 
@@ -180,7 +183,7 @@ graph TB
         Storage[Log Storage]
         Formatter[Log Formatter]
     end
-    
+
     GRPC --> LogProcessor
     LogProcessor --> Formatter
     Formatter --> Storage
@@ -205,6 +208,7 @@ graph TB
 ### gRPC Services
 
 #### Logging Service
+
 ```protobuf
 service LogService {
   rpc Log(LogRequest) returns (LogResponse);
@@ -223,12 +227,12 @@ service LogService {
 
 ### Configuration
 
-| Environment Variable | Description | Default | Required |
-|---------------------|-------------|---------|----------|
-| `LOG_LEVEL` | Logging level | `INFO` | No |
-| `LOG_PATH` | Log file path | `./logs` | No |
-| `LOG_FORMAT` | Log format (json/text) | `json` | No |
-| `PORT` | Service port | `9000` | No |
+| Environment Variable | Description            | Default  | Required |
+| -------------------- | ---------------------- | -------- | -------- |
+| `LOG_LEVEL`          | Logging level          | `INFO`   | No       |
+| `LOG_PATH`           | Log file path          | `./logs` | No       |
+| `LOG_FORMAT`         | Log format (json/text) | `json`   | No       |
+| `PORT`               | Service port           | `9000`   | No       |
 
 ## Service Communication Patterns
 
@@ -247,7 +251,7 @@ sequenceDiagram
     participant Auth as vibrox-auth
     participant Logger as vibrox-echo
     participant DB as PostgreSQL
-    
+
     Client->>Core: REST API Request
     Core->>Auth: gRPC Auth Request
     Auth->>DB: Validate User
@@ -308,4 +312,4 @@ sequenceDiagram
 
 ---
 
-*This service architecture document should be updated when significant service changes are made. Use `/adr` to create Architecture Decision Records for major service design decisions.*
+_This service architecture document should be updated when significant service changes are made. Use `/adr` to create Architecture Decision Records for major service design decisions._
