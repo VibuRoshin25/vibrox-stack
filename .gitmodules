@@ -1,9 +1,12 @@
 [submodule "vibrox-core"]
 	url = https://github.com/VibuRoshin25/vibrox-core
 	path = vibrox-core
+	branch = main
 [submodule "vibrox-auth"]
 	url = https://github.com/VibuRoshin25/vibrox-auth
 	path = vibrox-auth
+	branch = main
 [submodule "vibrox-echo"]
 	url = https://github.com/VibuRoshin25/vibrox-echo
 	path = vibrox-echo
+	branch = main
