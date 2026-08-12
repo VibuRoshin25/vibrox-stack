@@ -9,6 +9,11 @@ services:
       - POSTGRES_DB=postgres
     networks:
       - app-network
+    dns:
+      - 172.30.0.53
+    depends_on:
+      dns:
+        condition: service_healthy
     volumes:
       - vibrox-vol:/var/lib/postgresql/data
 
@@ -18,6 +23,11 @@ services:
       - "9000:9000"
     networks:
       - app-network
+    dns:
+      - 172.30.0.53
+    depends_on:
+      dns:
+        condition: service_healthy
     volumes:
       - ./vibrox-echo/logs:/app/logs
 
@@ -27,6 +37,35 @@ services:
       - "8000:8000"
     networks:
       - app-network
+    dns:
+      - 172.30.0.53
+    depends_on:
+      dns:
+        condition: service_healthy
+
+  dns:
+    build: ./vibrox-dns
+    ports:
+      - "127.0.0.1:2053:2053/udp"
+      - "127.0.0.1:2053:2053/tcp"
+      - "127.0.0.1:8053:8053"
+    environment:
+      - DNS_LISTEN_ADDR=:2053
+      # Preserve Docker service discovery while routing every query through
+      # vibrox-dns. Docker's embedded resolver also forwards public names.
+      - DNS_UPSTREAM=${DNS_UPSTREAM:-127.0.0.11:53}
+      - DNS_TIMEOUT=${DNS_TIMEOUT:-3s}
+      - HEALTH_LISTEN_ADDR=:8053
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8053/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+    restart: unless-stopped
+    networks:
+      app-network:
+        ipv4_address: 172.30.0.53
 
   app:
     build: ./vibrox-core
@@ -40,14 +79,24 @@ services:
       - AUTH_HOST=auth:8000
       - LOGGER_HOST=logger:9000
     depends_on:
-      - db
-      - logger
-      - auth
+      dns:
+        condition: service_healthy
+      db:
+        condition: service_started
+      logger:
+        condition: service_started
+      auth:
+        condition: service_started
     networks:
       - app-network
+    dns:
+      - 172.30.0.53
 
 networks:
   app-network:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
 
 volumes:
   vibrox-vol:

@@ -12,6 +12,7 @@ It includes Docker Compose, Kubernetes manifests, and Git submodules to manage a
 | `vibrox-core` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-core) | User management (Go, REST + gRPC)  |
 | `vibrox-auth` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-auth) | JWT authentication (Node.js, gRPC) |
 | `vibrox-echo` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-echo) | Centralized logging (Go, gRPC)     |
+| `vibrox-dns`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-dns)  | Forwarding DNS (Go, UDP + TCP)     |
 
 ---
 
@@ -39,6 +40,14 @@ You can spin up all services locally using Docker Compose:
 ```bash
 docker-compose up --build
 ```
+
+Test the local DNS service with `dig @127.0.0.1 -p 2053 example.com`. It is
+published on loopback only; set `DNS_UPSTREAM` to select another upstream
+resolver.
+
+All Compose services use `vibrox-dns` as their default resolver. The DNS
+service forwards through Docker's embedded resolver, so Compose service names
+such as `db`, `auth`, and `logger` continue to resolve normally.
 
 > Make sure each submodule has its own `Dockerfile` and `.env`.
 

@@ -10,3 +10,7 @@
 	url = https://github.com/VibuRoshin25/vibrox-echo
 	path = vibrox-echo
 	branch = main
+[submodule "vibrox-dns"]
+	path = vibrox-dns
+	url = https://github.com/VibuRoshin25/vibrox-dns
+	branch = main

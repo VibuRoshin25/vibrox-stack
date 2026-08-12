@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vibrox-dns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vibrox-dns
+  template:
+    metadata:
+      labels:
+        app: vibrox-dns
+    spec:
+      containers:
+        - name: vibrox-dns
+          image: viburoshin25/vibrox-dns:latest
+          imagePullPolicy: Always
+          env:
+            - name: DNS_LISTEN_ADDR
+              value: ":2053"
+            - name: DNS_UPSTREAM
+              value: "1.1.1.1:53"
+            - name: DNS_TIMEOUT
+              value: "3s"
+            - name: HEALTH_LISTEN_ADDR
+              value: ":8053"
+          ports:
+            - name: dns-udp
+              containerPort: 2053
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 2053
+              protocol: TCP
+            - name: health
+              containerPort: 8053
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 25m
+              memory: 16Mi
+            limits:
+              cpu: 250m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault

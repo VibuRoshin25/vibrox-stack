@@ -67,6 +67,12 @@ LOG_PATH=./logs                      # Log file path
 LOG_FORMAT=json                      # Log format (json/text)
 LOG_MAX_SIZE=100                     # Max log file size (MB)
 LOG_MAX_FILES=10                     # Max number of log files
+
+# vibrox-dns Configuration
+DNS_LISTEN_ADDR=:2053                # UDP/TCP listen address
+DNS_UPSTREAM=127.0.0.11:53           # Compose embedded resolver (Compose default)
+DNS_TIMEOUT=3s                       # Per-query timeout
+HEALTH_LISTEN_ADDR=:8053             # HTTP health endpoint
 ```
 
 #### Security Configuration
@@ -152,7 +158,7 @@ data:
 
 ## Environment-Specific Configurations
 
-### Development Environment
+### Development-Environment
 
 #### .env.development
 
@@ -220,7 +226,7 @@ volumes:
   postgres_dev_data:
 ```
 
-### Staging Environment
+### Staging-Environment
 
 #### .env.staging
 
@@ -273,7 +279,7 @@ data:
   RATE_LIMIT_MAX_REQUESTS: "500"
 ```
 
-### Production Environment
+### Production-Environment
 
 #### .env.production
 
@@ -334,7 +340,7 @@ data:
 
 ### Secret Management
 
-#### Environment Variables
+#### Environment-Variables
 
 ```bash
 # Never commit secrets to version control
@@ -367,7 +373,7 @@ secrets:
     file: ./secrets/jwt_secret.txt
 ```
 
-#### Kubernetes Secrets
+#### Kubernetes-Secrets
 
 ```yaml
 # Create secrets
@@ -642,7 +648,7 @@ nslookup $LOGGER_HOST
 grpcurl -plaintext $AUTH_HOST:8000 list
 ```
 
-#### Configuration Validation
+#### Configuration-Validation
 
 ```bash
 # Validate configuration

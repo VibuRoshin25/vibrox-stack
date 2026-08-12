@@ -68,6 +68,42 @@ kubectl get services
 kubectl get deployments
 ```
 
+## Use vibrox-dns as the cluster default
+
+Kubernetes pods normally query CoreDNS. Keep that path in place so Kubernetes
+service names continue to work, and configure CoreDNS to forward all remaining
+queries to `vibrox-dns`:
+
+```bash
+kubectl get service vibrox-dns -o jsonpath='{.spec.clusterIP}'
+kubectl -n kube-system edit configmap coredns
+```
+
+In the CoreDNS `Corefile`, retain the `kubernetes` block and change the catch-all
+forward target from the node resolver:
+
+```text
+forward . /etc/resolv.conf
+```
+
+to the `vibrox-dns` ClusterIP printed above, for example:
+
+```text
+forward . 10.96.123.45
+```
+
+Then reload CoreDNS:
+
+```bash
+kubectl -n kube-system rollout restart deployment/coredns
+kubectl -n kube-system rollout status deployment/coredns
+```
+
+This is intentionally a cluster operation rather than a hard-coded manifest:
+service CIDRs and CoreDNS configuration vary between clusters. Back up the
+existing ConfigMap before editing it. `vibrox-dns` uses a public upstream IP in
+Kubernetes, avoiding a forwarding loop back into CoreDNS.
+
 ## Service Deployment
 
 ### Database Deployment

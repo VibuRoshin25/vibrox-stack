@@ -128,12 +128,13 @@ volumes:
 
 ### Service Endpoints
 
-| Service         | Port | Description            | Health Check      |
-| --------------- | ---- | ---------------------- | ----------------- |
-| **vibrox-core** | 8080 | User management API    | `GET /health`     |
-| **vibrox-auth** | 8000 | Authentication service | gRPC health check |
-| **vibrox-echo** | 9000 | Logging service        | gRPC health check |
-| **PostgreSQL**  | 5432 | Database               | `pg_isready`      |
+| Service         | Port         | Description            | Health Check        |
+| --------------- | ------------ | ---------------------- | ------------------- |
+| **vibrox-core** | 8080         | User management API    | `GET /health`       |
+| **vibrox-auth** | 8000         | Authentication service | gRPC health check   |
+| **vibrox-echo** | 9000         | Logging service        | gRPC health check   |
+| **vibrox-dns**  | 2053 UDP/TCP | Forwarding DNS         | `GET :8053/healthz` |
+| **PostgreSQL**  | 5432         | Database               | `pg_isready`        |
 
 ### Environment Variables
 
@@ -145,7 +146,7 @@ POSTGRES_PASSWORD=server
 POSTGRES_DB=postgres
 ```
 
-#### Service Configuration
+#### Service-Configuration
 
 ```bash
 # vibrox-core
@@ -162,7 +163,19 @@ DB_USER=postgres
 DB_PASSWORD=server
 DB_NAME=postgres
 LOGGER_HOST=logger:9000
+
+# vibrox-dns
+DNS_UPSTREAM=1.1.1.1:53
+DNS_TIMEOUT=3s
 ```
+
+The DNS ports are bound to `127.0.0.1` so development does not expose an open
+resolver. Test it with `dig @127.0.0.1 -p 2053 example.com`.
+
+Every stack container uses `172.30.0.53` (`vibrox-dns`) as its default
+nameserver. The address is reserved through the Compose network's IPAM config.
+By default, `vibrox-dns` forwards to Docker's embedded resolver at
+`127.0.0.11:53`; this retains both public DNS and Compose service discovery.
 
 ## Development Workflow
 
@@ -447,7 +460,7 @@ docker-compose up --build
 
 ## Best Practices
 
-### Development Workflow
+### Development-Workflow
 
 1. **Always use `--build` flag** when making code changes
 2. **Check logs first** when troubleshooting issues

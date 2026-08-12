@@ -15,6 +15,9 @@ graph TB
     App --> Auth
     App --> Logger[vibrox-echo<br/>Logging Service]
 
+    DNSClient[DNS Clients] --> DNS[vibrox-dns<br/>Forwarding Resolver]
+    DNS --> Upstream[Upstream DNS Resolver]
+
     Auth --> Logger
     Auth --> DB
 
@@ -65,6 +68,16 @@ graph TB
   - User data persistence
   - Authentication data
   - Application state management
+
+### 5. vibrox-dns (DNS Service)
+
+- **Technology**: Go with native DNS over UDP and TCP
+- **Purpose**: Private forwarding resolver for local and cluster workloads
+- **Responsibilities**:
+  - Forward DNS queries to a configurable upstream
+  - Support UDP and TCP transports
+  - Expose an HTTP health endpoint for orchestration
+  - Remain private by default to prevent an open resolver
 
 ## 🔄 Service Communication
 
@@ -147,6 +160,7 @@ sequenceDiagram
 | **vibrox-core**      | Go                          | User management and business logic |
 | **vibrox-auth**      | Node.js                     | Authentication and authorization   |
 | **vibrox-echo**      | Go                          | Centralized logging                |
+| **vibrox-dns**       | Go                          | Forwarding DNS resolver            |
 | **Database**         | PostgreSQL                  | Data persistence                   |
 | **Containerization** | Docker                      | Service packaging                  |
 | **Orchestration**    | Docker Compose / Kubernetes | Deployment and scaling             |
