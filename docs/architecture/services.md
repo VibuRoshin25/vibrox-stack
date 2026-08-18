@@ -66,7 +66,7 @@ graph TB
 
 ### Technology Stack
 
-- **Language**: Go 1.21+
+- **Language**: Go 1.26+
 - **Web Framework**: Gin
 - **ORM**: GORM
 - **Communication**: gRPC client for inter-service communication
@@ -199,7 +199,7 @@ graph TB
 
 ### Technology Stack
 
-- **Language**: Go 1.21+
+- **Language**: Go 1.26+
 - **Framework**: gRPC server
 - **Storage**: Local filesystem
 - **Communication**: gRPC server

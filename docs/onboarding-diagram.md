@@ -8,7 +8,7 @@ This diagram shows the complete developer onboarding process for the Vibrox Stac
 flowchart TD
     Start([New Developer Joins]) --> Prereq{Check Prerequisites}
 
-    Prereq -->|Missing| InstallPrereq[Install Prerequisites<br/>- Git<br/>- Docker & Docker Compose<br/>- Go 1.21+<br/>- Node.js 18+<br/>- kubectl]
+    Prereq -->|Missing| InstallPrereq[Install Prerequisites<br/>- Git<br/>- Docker & Docker Compose<br/>- Go 1.26+<br/>- Node.js 18+<br/>- kubectl]
     InstallPrereq --> CloneRepo
     Prereq -->|All Present| CloneRepo[Clone Repository with Submodules]
 
