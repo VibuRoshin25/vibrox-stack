@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vibrox-arena
+spec:
+  type: ClusterIP
+  selector:
+    app: vibrox-arena
+  ports:
+    - name: grpc
+      port: 8100
+      targetPort: grpc

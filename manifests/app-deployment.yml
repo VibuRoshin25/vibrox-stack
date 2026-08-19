@@ -23,15 +23,7 @@ spec:
             periodSeconds: 10
             initialDelaySeconds: 10
           env:
-            - name: DB_HOST
-              value: vibrox-db
-            - name: DB_USER
-              value: postgres
-            - name: DB_PASSWORD
-              value: postgres
-            - name: DB_NAME
-              value: postgres
-            - name: AUTH_HOST
-              value: vibrox-auth:8000
             - name: LOGGER_HOST
               value: vibrox-echo:9000
+            - name: ARENA_HOST
+              value: vibrox-arena:8100

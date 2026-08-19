@@ -7,13 +7,18 @@ It includes Docker Compose, Kubernetes manifests, and Git submodules to manage a
 
 ## 📦 Included Services
 
-| Service       | Repo                                                       | Description                        |
-| ------------- | ---------------------------------------------------------- | ---------------------------------- |
-| `vibrox-core` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-core) | User management (Go, REST + gRPC)  |
-| `vibrox-auth` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-auth) | JWT authentication (Node.js, gRPC) |
-| `vibrox-echo` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-echo) | Centralized logging (Go, gRPC)     |
-| `vibrox-dns`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-dns)  | Forwarding DNS (Go, UDP + TCP)     |
-| `vibrox-web`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-web)  | Portfolio and live systems lab     |
+| Service        | Repo                                                        | Description                               |
+| -------------- | ----------------------------------------------------------- | ----------------------------------------- |
+| `vibrox-core`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-core)  | Systems Lab API gateway (Go, REST + gRPC) |
+| `vibrox-echo`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-echo)  | Centralized logging (Go, gRPC)            |
+| `vibrox-dns`   | [GitHub Link](https://github.com/VibuRoshin25/vibrox-dns)   | Forwarding DNS (Go, UDP + TCP)            |
+| `vibrox-web`   | [GitHub Link](https://github.com/VibuRoshin25/vibrox-web)   | Portfolio and live systems lab            |
+| `vibrox-arena` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-arena) | Tic-tac-toe bot and gRPC experiment       |
+
+`vibrox-auth` is retained as a historical learning repository but is no longer
+part of the runtime. Its former user-management flow had no product requirement.
+`vibrox-arena` provides an interactive, inspectable gRPC demonstration through
+the tic-tac-toe bot.
 
 ---
 
@@ -52,7 +57,7 @@ container, keeping backend services behind a same-origin entry point.
 
 All Compose services use `vibrox-dns` as their default resolver. The DNS
 service forwards through Docker's embedded resolver, so Compose service names
-such as `db`, `auth`, and `logger` continue to resolve normally.
+such as `logger` and `vibrox-core` continue to resolve normally.
 
 > Make sure each submodule has its own `Dockerfile` and `.env`.
 

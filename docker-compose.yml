@@ -1,22 +1,4 @@
 services:
-  db:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=server
-      - POSTGRES_DB=postgres
-    networks:
-      - app-network
-    dns:
-      - 172.30.0.53
-    depends_on:
-      dns:
-        condition: service_healthy
-    volumes:
-      - vibrox-vol:/var/lib/postgresql/data
-
   logger:
     build: ./vibrox-echo
     ports:
@@ -47,8 +29,8 @@ services:
           "wget",
           "--quiet",
           "--tries=1",
-          "--spider",
-          "http://127.0.0.1:8080/health",
+          "--output-document=/dev/null",
+          "http://127.0.0.1:8080/healthz",
         ]
       interval: 10s
       timeout: 3s
@@ -59,18 +41,6 @@ services:
       - app-network
     dns:
       - 172.30.0.53
-
-  auth:
-    build: ./vibrox-auth
-    ports:
-      - "8000:8000"
-    networks:
-      - app-network
-    dns:
-      - 172.30.0.53
-    depends_on:
-      dns:
-        condition: service_healthy
 
   dns:
     build: ./vibrox-dns
@@ -92,8 +62,8 @@ services:
           "wget",
           "--quiet",
           "--tries=1",
-          "--spider",
-          "http://127.0.0.1:8053/health",
+          "--output-document=/dev/null",
+          "http://127.0.0.1:8053/healthz",
         ]
       interval: 10s
       timeout: 3s
@@ -104,26 +74,40 @@ services:
       app-network:
         ipv4_address: 172.30.0.53
 
+  arena:
+    build: ./vibrox-arena
+    environment:
+      - GRPC_LISTEN_ADDR=:8100
+      - HEALTH_LISTEN_ADDR=:8054
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--output-document=/dev/null", "http://127.0.0.1:8054/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+    restart: unless-stopped
+    networks:
+      - app-network
+    dns:
+      - 172.30.0.53
+    depends_on:
+      dns:
+        condition: service_healthy
+
   app:
     build: ./vibrox-core
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=db
-      - DB_USER=postgres
-      - DB_PASSWORD=server
-      - DB_NAME=postgres
-      - AUTH_HOST=auth:8000
       - LOGGER_HOST=logger:9000
+      - ARENA_HOST=arena:8100
     depends_on:
       dns:
         condition: service_healthy
-      db:
-        condition: service_started
       logger:
         condition: service_started
-      auth:
-        condition: service_started
+      arena:
+        condition: service_healthy
     networks:
       app-network:
         aliases:
@@ -136,17 +120,3 @@ networks:
     ipam:
       config:
         - subnet: 172.30.0.0/24
-
-volumes:
-  vibrox-vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./vibrox-vol
-      o: bind
-  vibrox-echo-vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./vibrox-echo/logs
-      o: bind

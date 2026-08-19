@@ -2,10 +2,6 @@
 	url = https://github.com/VibuRoshin25/vibrox-core
 	path = vibrox-core
 	branch = main
-[submodule "vibrox-auth"]
-	url = https://github.com/VibuRoshin25/vibrox-auth
-	path = vibrox-auth
-	branch = main
 [submodule "vibrox-echo"]
 	url = https://github.com/VibuRoshin25/vibrox-echo
 	path = vibrox-echo
@@ -17,4 +13,8 @@
 [submodule "vibrox-web"]
 	path = vibrox-web
 	url = https://github.com/VibuRoshin25/vibrox-web
+	branch = main
+[submodule "vibrox-arena"]
+	url = https://github.com/VibuRoshin25/vibrox-arena
+	path = vibrox-arena
 	branch = main

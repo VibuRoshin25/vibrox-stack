@@ -1,34 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vibrox-web
+  name: vibrox-arena
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: vibrox-web
+      app: vibrox-arena
   template:
     metadata:
       labels:
-        app: vibrox-web
+        app: vibrox-arena
     spec:
       containers:
-        - name: vibrox-web
-          image: viburoshin25/vibrox-web:latest
+        - name: vibrox-arena
+          image: viburoshin25/vibrox-arena:latest
           imagePullPolicy: Always
+          env:
+            - name: GRPC_LISTEN_ADDR
+              value: ":8100"
+            - name: HEALTH_LISTEN_ADDR
+              value: ":8054"
           ports:
-            - name: http
-              containerPort: 8080
+            - name: grpc
+              containerPort: 8100
+            - name: health
+              containerPort: 8054
           readinessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: health
             initialDelaySeconds: 2
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: health
             initialDelaySeconds: 5
             periodSeconds: 20
           resources:
@@ -36,7 +43,7 @@ spec:
               cpu: 25m
               memory: 16Mi
             limits:
-              cpu: 200m
+              cpu: 250m
               memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
@@ -44,16 +51,6 @@ spec:
               drop: ["ALL"]
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          volumeMounts:
-            - name: nginx-cache
-              mountPath: /var/cache/nginx
-            - name: nginx-run
-              mountPath: /var/run
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      volumes:
-        - name: nginx-cache
-          emptyDir: {}
-        - name: nginx-run
-          emptyDir: {}
