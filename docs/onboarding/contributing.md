@@ -113,7 +113,7 @@ async function authenticateUser(username, password) {
 
 ## Testing Guidelines
 
-### Requirements
+### Testing Requirements
 
 - Unit tests for all new functionality
 - Integration tests for service interactions
@@ -203,7 +203,7 @@ Brief description of changes.
 
 ## Documentation
 
-### Requirements
+### Documentation Requirements
 
 - Document complex logic and public APIs
 - Update service README files

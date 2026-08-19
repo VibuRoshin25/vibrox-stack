@@ -303,7 +303,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 
 ## 📊 Monitoring
 
-### Health Checks
+### Health-Checks
 
 - **Liveness**: `/health` - Service is running
 - **Readiness**: `/ready` - Service is ready to handle requests

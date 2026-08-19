@@ -1,50 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vibrox-dns
+  name: vibrox-web
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: vibrox-dns
+      app: vibrox-web
   template:
     metadata:
       labels:
-        app: vibrox-dns
+        app: vibrox-web
     spec:
       containers:
-        - name: vibrox-dns
-          image: viburoshin25/vibrox-dns:latest
+        - name: vibrox-web
+          image: viburoshin25/vibrox-web:latest
           imagePullPolicy: Always
-          env:
-            - name: DNS_LISTEN_ADDR
-              value: ":2053"
-            - name: DNS_UPSTREAM
-              value: "1.1.1.1:53"
-            - name: DNS_TIMEOUT
-              value: "3s"
-            - name: HEALTH_LISTEN_ADDR
-              value: ":8053"
           ports:
-            - name: dns-udp
-              containerPort: 2053
-              protocol: UDP
-            - name: dns-tcp
-              containerPort: 2053
-              protocol: TCP
-            - name: health
-              containerPort: 8053
-              protocol: TCP
+            - name: http
+              containerPort: 8080
           readinessProbe:
             httpGet:
               path: /health
-              port: health
+              port: http
             initialDelaySeconds: 2
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
-              port: health
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 20
           resources:
@@ -52,7 +36,7 @@ spec:
               cpu: 25m
               memory: 16Mi
             limits:
-              cpu: 250m
+              cpu: 200m
               memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
@@ -60,6 +44,16 @@ spec:
               drop: ["ALL"]
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}

@@ -13,6 +13,7 @@ It includes Docker Compose, Kubernetes manifests, and Git submodules to manage a
 | `vibrox-auth` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-auth) | JWT authentication (Node.js, gRPC) |
 | `vibrox-echo` | [GitHub Link](https://github.com/VibuRoshin25/vibrox-echo) | Centralized logging (Go, gRPC)     |
 | `vibrox-dns`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-dns)  | Forwarding DNS (Go, UDP + TCP)     |
+| `vibrox-web`  | [GitHub Link](https://github.com/VibuRoshin25/vibrox-web)  | Portfolio and live systems lab     |
 
 ---
 
@@ -44,6 +45,10 @@ docker-compose up --build
 Test the local DNS service with `dig @127.0.0.1 -p 2053 example.com`. It is
 published on loopback only; set `DNS_UPSTREAM` to select another upstream
 resolver.
+
+Open `http://localhost:3000` for the portfolio and interactive Systems Lab.
+Requests under `/api` are routed internally to `vibrox-core` by the web
+container, keeping backend services behind a same-origin entry point.
 
 All Compose services use `vibrox-dns` as their default resolver. The DNS
 service forwards through Docker's embedded resolver, so Compose service names

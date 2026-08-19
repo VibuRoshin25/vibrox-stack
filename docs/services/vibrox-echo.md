@@ -180,7 +180,7 @@ message LogEntry {
 
 #### Text Format
 
-```
+```bash
 2024-01-15T10:30:00.123Z [INFO] vibrox-core: User authenticated successfully user_id=123 request_id=req-abc-123 ip_address=192.168.1.100
 ```
 
@@ -231,7 +231,7 @@ sequenceDiagram
 
 ### File Organization
 
-```
+```bash
 logs/
 ├── 2024/
 │   ├── 01/

@@ -8,7 +8,8 @@ The Vibrox Stack is a microservices-based architecture designed for scalability,
 
 ```mermaid
 graph TB
-    Client[Client Applications] --> App[vibrox-core<br/>User Management]
+    Client[Client Applications] --> Web[vibrox-web<br/>Portfolio + Systems Lab]
+    Web --> App[vibrox-core<br/>User Management]
     Client --> Auth[vibrox-auth<br/>Authentication]
 
     App --> DB[(PostgreSQL<br/>Database)]
@@ -40,6 +41,16 @@ graph TB
   - Business logic orchestration
   - Integration with other services
   - REST API endpoints for client applications
+
+### vibrox-web (Portfolio and Systems Lab)
+
+- **Technology**: React, TypeScript, Vite, and unprivileged Nginx
+- **Purpose**: Public portfolio and interactive presentation layer
+- **Responsibilities**:
+  - Present portfolio and project content
+  - Turn backend behavior into safe, observable demonstrations
+  - Proxy same-origin `/api` requests to `vibrox-core`
+  - Remain available when an optional live demonstration is offline
 
 ### 2. vibrox-auth (Authentication Service)
 

@@ -12,7 +12,7 @@ This guide covers deploying the Vibrox Stack in different environments, from loc
 
 ## 🐳 Docker Compose Deployment
 
-### Prerequisites
+### Docker Compose Prerequisites
 
 - Docker and Docker Compose installed
 - Git with submodules
@@ -75,7 +75,7 @@ docker-compose exec db pg_dump -U postgres postgres > backup.sql
 
 ## ☸️ Kubernetes Deployment
 
-### Prerequisites
+### Kubernetes Prerequisites
 
 - Kubernetes cluster (local or cloud)
 - kubectl configured
@@ -231,6 +231,7 @@ spec:
    ```
 
 3. **RBAC Configuration**
+
    ```bash
    # Create service accounts
    kubectl create serviceaccount vibrox-core
@@ -251,6 +252,7 @@ spec:
    ```
 
 2. **Log Aggregation**
+
    ```bash
    # Configure log forwarding
    kubectl apply -f manifests/logging/
@@ -322,6 +324,7 @@ kubectl patch service app-service -p '{"spec":{"selector":{"version":"v1"}}}'
    ```
 
 3. **Resource Issues**
+
    ```bash
    # Check resource usage
    kubectl top pods

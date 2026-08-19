@@ -14,3 +14,7 @@
 	path = vibrox-dns
 	url = https://github.com/VibuRoshin25/vibrox-dns
 	branch = main
+[submodule "vibrox-web"]
+	path = vibrox-web
+	url = https://github.com/VibuRoshin25/vibrox-web
+	branch = main

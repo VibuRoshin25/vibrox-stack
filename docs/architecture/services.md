@@ -36,7 +36,7 @@ graph TB
 
 ## vibrox-core Service
 
-### Architecture
+### vibrox-core Architecture
 
 The `vibrox-core` service is the primary user management service built with Go. It serves as the main entry point for client applications and orchestrates business logic across the system.
 
@@ -56,7 +56,7 @@ graph TB
     Business --> DBClient
 ```
 
-### Responsibilities
+### vibrox-core Responsibilities
 
 - **User Management**: CRUD operations for user accounts
 - **Business Logic**: Core application business rules and workflows
@@ -64,7 +64,7 @@ graph TB
 - **Service Orchestration**: Coordinates with auth and logging services
 - **Data Persistence**: Manages user data in PostgreSQL
 
-### Technology Stack
+### vibrox-core Technology Stack
 
 - **Language**: Go 1.26+
 - **Web Framework**: Gin
@@ -92,7 +92,7 @@ GET    /health             # Service health check
 GET    /status             # Service status
 ```
 
-### Configuration
+### vibrox-core Configuration
 
 | Environment Variable | Description         | Default       | Required |
 | -------------------- | ------------------- | ------------- | -------- |
@@ -106,7 +106,7 @@ GET    /status             # Service status
 
 ## vibrox-auth Service
 
-### Architecture
+### vibrox-auth Architecture
 
 The `vibrox-auth` service handles all authentication and authorization responsibilities using JWT tokens and gRPC communication.
 
@@ -126,7 +126,7 @@ graph TB
     GRPC --> LoggerClient
 ```
 
-### Responsibilities
+### vibrox-auth Responsibilities
 
 - **Authentication**: User login and credential validation
 - **JWT Management**: Token generation, validation, and refresh
@@ -134,7 +134,7 @@ graph TB
 - **Security**: Password hashing and cryptographic operations
 - **Session Management**: User session tracking and management
 
-### Technology Stack
+### vibrox-auth Technology Stack
 
 - **Language**: Node.js 18+
 - **Framework**: gRPC server
@@ -143,7 +143,7 @@ graph TB
 - **Database**: PostgreSQL
 - **Communication**: gRPC server
 
-### gRPC Services
+### vibrox-auth gRPC Services
 
 #### Authentication Service
 
@@ -156,7 +156,7 @@ service AuthService {
 }
 ```
 
-### Configuration
+### vibrox-auth Configuration
 
 | Environment Variable | Description           | Default       | Required |
 | -------------------- | --------------------- | ------------- | -------- |
@@ -171,7 +171,7 @@ service AuthService {
 
 ## vibrox-echo Service
 
-### Architecture
+### vibrox-echo Architecture
 
 The `vibrox-echo` service provides centralized logging capabilities for the entire system using gRPC communication.
 
@@ -189,7 +189,7 @@ graph TB
     Formatter --> Storage
 ```
 
-### Responsibilities
+### vibrox-echo Responsibilities
 
 - **Log Aggregation**: Collect logs from all services
 - **Log Processing**: Parse, format, and structure log entries
@@ -197,7 +197,7 @@ graph TB
 - **Log Retrieval**: Provide log querying and retrieval capabilities
 - **Monitoring**: Support for monitoring and alerting
 
-### Technology Stack
+### vibrox-echo Technology Stack
 
 - **Language**: Go 1.26+
 - **Framework**: gRPC server
@@ -205,7 +205,7 @@ graph TB
 - **Communication**: gRPC server
 - **Logging**: Structured logging with JSON format
 
-### gRPC Services
+### vibrox-echo gRPC Services
 
 #### Logging Service
 
@@ -225,7 +225,7 @@ service LogService {
 - **ERROR**: Error conditions
 - **FATAL**: Fatal errors that cause service termination
 
-### Configuration
+### vibrox-echo Configuration
 
 | Environment Variable | Description            | Default  | Required |
 | -------------------- | ---------------------- | -------- | -------- |

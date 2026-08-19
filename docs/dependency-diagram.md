@@ -134,7 +134,7 @@ graph TB
 
 ### vibrox-core Dependencies
 
-#### Go Dependencies
+#### vibrox-core Go Dependencies
 
 ```go
 // Core Framework
@@ -153,7 +153,7 @@ google.golang.org/grpc/credentials // gRPC security
 github.com/cosmtrek/air           // Hot reload for development
 ```
 
-#### External Services
+#### vibrox-core External Services
 
 - **PostgreSQL**: Primary database for user data
 - **vibrox-auth**: JWT token validation service
@@ -173,14 +173,14 @@ github.com/cosmtrek/air           // Hot reload for development
 }
 ```
 
-#### External Services
+#### vibrox-auth External Services
 
 - **vibrox-echo**: Logging service integration
 - **Environment Variables**: JWT secret configuration
 
 ### vibrox-echo Dependencies
 
-#### Go Dependencies
+#### vibrox-echo Go Dependencies
 
 ```go
 // gRPC
@@ -191,7 +191,7 @@ google.golang.org/protobuf        // Protocol buffers
 github.com/cosmtrek/air           // Hot reload for development
 ```
 
-#### External Services
+#### vibrox-echo External Services
 
 - **File System**: Local log storage
 - **gRPC Clients**: Service communication

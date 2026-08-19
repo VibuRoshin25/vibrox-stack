@@ -128,13 +128,14 @@ volumes:
 
 ### Service Endpoints
 
-| Service         | Port         | Description            | Health Check        |
-| --------------- | ------------ | ---------------------- | ------------------- |
-| **vibrox-core** | 8080         | User management API    | `GET /health`       |
-| **vibrox-auth** | 8000         | Authentication service | gRPC health check   |
-| **vibrox-echo** | 9000         | Logging service        | gRPC health check   |
-| **vibrox-dns**  | 2053 UDP/TCP | Forwarding DNS         | `GET :8053/healthz` |
-| **PostgreSQL**  | 5432         | Database               | `pg_isready`        |
+| Service         | Port         | Description               | Health Check       |
+| --------------- | ------------ | ------------------------- | ------------------ |
+| **vibrox-core** | 8080         | User management API       | `GET /health`      |
+| **vibrox-auth** | 8000         | Authentication service    | gRPC health check  |
+| **vibrox-echo** | 9000         | Logging service           | gRPC health check  |
+| **vibrox-dns**  | 2053 UDP/TCP | Forwarding DNS            | `GET :8053/health` |
+| **vibrox-web**  | 3000         | Portfolio and Systems Lab | `GET /health`      |
+| **PostgreSQL**  | 5432         | Database                  | `pg_isready`       |
 
 ### Environment Variables
 

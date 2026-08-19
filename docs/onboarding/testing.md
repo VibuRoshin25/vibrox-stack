@@ -8,7 +8,7 @@ This guide covers testing strategies, best practices, and tools for the Vibrox S
 
 ### Testing Pyramid
 
-```
+```bash
     /\
    /  \     E2E Tests (Few)
   /____\    Integration Tests (Some)
@@ -24,7 +24,7 @@ This guide covers testing strategies, best practices, and tools for the Vibrox S
 
 ## Go Testing
 
-### Unit Tests
+### Go Unit Tests
 
 ```go
 // user_service_test.go
@@ -59,7 +59,7 @@ func TestUserService_CreateUser(t *testing.T) {
 }
 ```
 
-### Integration Tests
+### Go Integration Tests
 
 ```go
 // integration_test.go
@@ -123,7 +123,7 @@ go tool cover -html=coverage.out
 
 ## Node.js Testing
 
-### Unit Tests
+### Node.js Unit Tests
 
 ```javascript
 // auth.service.test.js
@@ -169,14 +169,14 @@ describe("AuthService", () => {
 
       // Act & Assert
       await expect(
-        authService.authenticate("invalid", "wrong")
+        authService.authenticate("invalid", "wrong"),
       ).to.be.rejectedWith("Invalid credentials");
     });
   });
 });
 ```
 
-### Integration Tests
+### Node.js Integration Tests
 
 ```javascript
 // integration.test.js

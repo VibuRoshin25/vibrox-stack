@@ -114,7 +114,7 @@ graph TB
 - **Token Payload**: User ID and email for identification
 - **Error Handling**: Secure error responses without information leakage
 
-### Data Protection
+### Runtime Data Protection
 
 #### Database Security
 
@@ -228,7 +228,7 @@ API_KEY=encrypted-api-key
 
 ## Security Compliance
 
-### Data Protection
+### Compliance Data Protection
 
 - **GDPR Compliance**: User data protection and privacy
 - **Data Minimization**: Collect only necessary data

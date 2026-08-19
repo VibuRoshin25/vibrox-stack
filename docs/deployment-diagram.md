@@ -270,7 +270,7 @@ services:
 - **Port Mapping**: Direct access to services for debugging
 - **Network Isolation**: Docker network for service communication
 
-## Infrastructure Components
+## Infrastructure-Components
 
 ### Storage Solutions
 
